@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="Ordnance, Survey, Archers, Archer GB, Southern, Couties, Archery, Society, Hampshire, Archery,Association, Bows, Arrows, Fun, Family, Friendly, Club, Members, Great, Britain, Compound, Recurve, Longbow, Crossbow, Olympic, Target, Wand, Nursling, Southampton, Barebow, Senior, Junior, Safe, Totton, Waterside, Hythe, New Forest ,World, Coaching, Beginners, Competition, Hidden Dragon, NFAS, AGB, SCAS, HAA, Merlin Archery, Quicks Arhcer, Bow Sports,&quot;Southern Counties Archery Society&quot;,&quot;Hampshire Archery Association&quot;,&quot;Archery Club Southampton&quot;,&quot;Family Friendly Archery&quot;,&quot;Archery Coaching for Beginners&quot;,&quot;Archery Competition Totton&quot;,&quot;Compound and Recurve Archery&quot;,&quot;Olympic Target Archery&quot;,&quot;Barebow Archery New Forest&quot;,&quot;Archery Equipment Suppliers&quot;,&quot;Archery Fun for Juniors&quot;,&quot;Archery in Waterside Hythe&quot;,&quot;NFAS (National Field Archery Society) Events&quot;,&quot;AGB (Archery GB) Affiliated Club&quot;,&quot;Safe Archery Practices&quot;,&quot;Archery Gear&quot;,&quot;Bow Hunting&quot;,&quot;Target Archery&quot;,&quot;Archery Equipment&quot;,&quot;Archery Techniques&quot;,&quot;Bow and Arrow&quot;,&quot;Archery Supplies&quot;,&quot;Traditional Archery&quot;,&quot;Archery Tips&quot;,&quot;Archery Training&quot;">
+  <title>Imperial Challenge 2026 - Countdown</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .hero {
+      background: white;
+      border-radius: 20px;
+      padding: 60px 40px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      margin-bottom: 40px;
+    }
+
+    .hero h1 {
+      color: #4a5c8c;
+      font-size: 3em;
+      margin-bottom: 20px;
+    }
+
+    .footer {
+      text-align: center;
+      color: white;
+      padding: 30px 20px;
+      margin-top: 40px;
+    }
+
+    .footer a {
+      color: white;
+      text-decoration: underline;
+    }
+
+    .hero .subtitle {
+      color: #e91e63;
+      font-size: 1.5em;
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #4a5c8c 0%, #3d4d73 100%);
+      min-height: 100vh;
+    }
+
+    .header {
+      background: white;
+      padding: 20px 40px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+
+    .logo-container a {
+      display: block;
+    }
+
+    .logo {
+      height: 80px;
+      width: auto;
+    }
+
+    .header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 60px 40px;
+      text-align: center;
+    }
+
+    .event-info {
+      background: #e3f2fd;
+      padding: 30px;
+      border-radius: 10px;
+      margin-bottom: 40px;
+      border-left: 5px solid #2c5aa0;
+    }
+
+    .event-info h2 {
+      color: #2c5aa0;
+      font-size: 2em;
+      margin-bottom: 15px;
+    }
+
+    .event-info p {
+      color: #555;
+      font-size: 1.2em;
+      line-height: 1.8;
+    }
+
+    .countdown-container {
+      margin: 40px 0;
+    }
+
+    .countdown-title {
+      font-size: 2em;
+      color: #2c5aa0;
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .countdown_En-item {
+      background: linear-gradient(135deg, #ffbf00 0%, #ffbf00 100%);
+      padding: 30px 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(44, 90, 160, 0.3);
+      transition: transform 0.3s;
+    }
+
+    .countdown-item {
+      background: linear-gradient(135deg, #00ff40 0%, #00ff40 100%);
+      padding: 30px 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(44, 90, 160, 0.3);
+      transition: transform 0.3s;
+    }
+
+    .countdown-item:hover {
+      transform: translateY(-5px);
+    }
+
+    .countdown-number {
+      font-size: 3.5em;
+      font-weight: bold;
+      color: white;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .countdown-label {
+      font-size: 1em;
+      color: rgba(255, 255, 255, 0.9);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .challenge-started {
+      display: none;
+      background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+      color: white;
+      padding: 40px;
+      border-radius: 10px;
+      margin: 40px 0;
+    }
+
+    .challenge-started h2 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
+    .challenge-started p {
+      font-size: 1.3em;
+      margin-bottom: 30px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: white;
+      color: #2c5aa0;
+      padding: 15px 40px;
+      font-size: 1.2em;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      margin: 10px;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .details-section {
+      background: #f8f9fa;
+      padding: 40px;
+      border-radius: 10px;
+      margin-top: 40px;
+    }
+
+    .details-section h3 {
+      color: #2c5aa0;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .detail-card {
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      border-left: 4px solid #e91e63;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: centre;
+    }
+    .detail-card-left {
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      border-left: 4px solid #e91e63;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: left;
+    }
+
+    .detail-card h4 {
+      color: #2c5aa0;
+      font-size: 1.3em;
+      margin-bottom: 10px;
+    }
+
+    .detail-card p {
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .tier-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin: 5px;
+      font-size: 0.9em;
+    }
+
+    .tier-badge.gold {
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      color: white;
+    }
+
+    .tier-badge.silver {
+      background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
+      color: white;
+    }
+
+    .tier-badge.bronze {
+      background: linear-gradient(135deg, #CD7F32 0%, #B8722C 100%);
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8em;
+      }
+
+      .content {
+        padding: 30px 20px;
+      }
+
+      .countdown {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .countdown-number {
+        font-size: 2.5em;
+      }
+
+      .countdown-title {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+<header class="header">
+  <div class="logo-container">
+    <a href="https://www.osarchers.co.uk" target="_blank">
+      <img src="img/OSA%20logo@2x.png" alt="OS Archers Logo" class="logo">
+    </a>
+  </div>
+  <h1>Imperial Challenge Home</h1>
+
+</header>
+<div class="container">
+
+
+  <div class="content">
+    <div class="event-info">
+      <h2>🎯 The Challenge Begins Soon!</h2>
+      <p>
+        The Imperial Challenge 2026 is an exciting archery challenge featuring traditional Imperial rounds.
+        <br>Choose your tier, shoot six rounds, and earn your medal!
+      </p>
+    </div>
+
+    <div id="countdownSection_Entry" class="countdown-container">
+      <div class="countdown-title" id="registrationTitle">Registration opens in:</div>
+      <div class="countdown" id="registrationCountdown">
+        <div class="countdown_En-item">
+          <div class="countdown-number" id="days_En">0</div>
+          <div class="countdown-label">Days</div>
+        </div>
+        <div class="countdown_En-item">
+          <div class="countdown-number" id="hours_En">0</div>
+          <div class="countdown-label">Hours</div>
+        </div>
+        <div class="countdown_En-item">
+          <div class="countdown-number" id="minutes_En">0</div>
+          <div class="countdown-label">Minutes</div>
+        </div>
+        <div class="countdown_En-item">
+          <div class="countdown-number" id="seconds_En">0</div>
+          <div class="countdown-label">Seconds</div>
+        </div>
+      </div>
+      <div id="registrationFailed" style="display: none;">
+        <div class="countdown-title" style="color: #dc3545; text-decoration: line-through; opacity: 0.6;">Registration opens in:</div>
+        <div class="countdown">
+          <div class="countdown_En-item" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); opacity: 0.7; position: relative;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4em; color: rgba(255,255,255,0.9);">✗</div>
+            <div class="countdown-number" style="opacity: 0.3;">--</div>
+            <div class="countdown-label" style="opacity: 0.5;">ERROR</div>
+          </div>
+          <div class="countdown_En-item" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); opacity: 0.7; position: relative;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4em; color: rgba(255,255,255,0.9);">✗</div>
+            <div class="countdown-number" style="opacity: 0.3;">--</div>
+            <div class="countdown-label" style="opacity: 0.5;">ERROR</div>
+          </div>
+          <div class="countdown_En-item" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); opacity: 0.7; position: relative;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4em; color: rgba(255,255,255,0.9);">✗</div>
+            <div class="countdown-number" style="opacity: 0.3;">--</div>
+            <div class="countdown-label" style="opacity: 0.5;">ERROR</div>
+          </div>
+          <div class="countdown_En-item" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); opacity: 0.7; position: relative;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4em; color: rgba(255,255,255,0.9);">✗</div>
+            <div class="countdown-number" style="opacity: 0.3;">--</div>
+            <div class="countdown-label" style="opacity: 0.5;">ERROR</div>
+          </div>
+        </div>
+      </div>
+      <div id="registrationError" style="display: none; margin-top: 30px; padding: 20px; background: #d4edda; border: 2px solid #28a745; border-radius: 10px;">
+        <p style="color: #155724; font-size: 1.2em; font-weight: bold; margin-bottom: 15px;">✓ Registration Now Open!</p>
+        <p style="color: #155724; margin-bottom: 20px;">The countdown experienced an error and registration has opened early. Register now for the Imperial Challenge 2026!</p>
+        <a href="enter.html" class="cta-button" style="background: linear-gradient(135deg, #28a745 0%, #218838 100%); color: white;">Register Now</a>
+      </div>
+    </div>
+
+    <div id="countdownSection" class="countdown-container">
+      <div class="countdown-title">Challenge starts in:</div>
+      <div class="countdown">
+        <div class="countdown-item">
+          <div class="countdown-number" id="days">0</div>
+          <div class="countdown-label">Days</div>
+        </div>
+        <div class="countdown-item">
+          <div class="countdown-number" id="hours">0</div>
+          <div class="countdown-label">Hours</div>
+        </div>
+        <div class="countdown-item">
+          <div class="countdown-number" id="minutes">0</div>
+          <div class="countdown-label">Minutes</div>
+        </div>
+        <div class="countdown-item">
+          <div class="countdown-number" id="seconds">0</div>
+          <div class="countdown-label">Seconds</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="challengeStarted" class="challenge-started">
+      <h2>🎉 The Challenge Has Started!</h2>
+      <p>The Imperial Challenge 2026 is now live! Register and start submitting your scores.</p>
+      <div>
+        <a href="imperial-challenge-registration.html" class="cta-button">Register Now</a>
+        <a href="imperial-challenge-score-entry.html" class="cta-button">Submit Scores</a>
+      </div>
+    </div>
+
+    <div class="details-section">
+      <h3>Challenge Details</h3>
+      <div class="details-grid">
+        <div class="detail-card">
+          <h4>📅 Challenge Period</h4>
+          <p><strong>Start:</strong> April 3, 2026<br>
+            <strong>End:</strong> September 30, 2026<br>
+            <strong>Medals:</strong> Distributed by Christmas 2026</p>
+        </div>
+
+        <div class="detail-card">
+          <h4>🏅 Three Tiers Available</h4>
+          <p>
+            <span class="tier-badge gold">Gold Tier</span>
+            <span class="tier-badge silver">Silver Tier</span>
+            <span class="tier-badge bronze">Bronze Tier</span>
+            <br><br>
+            Complete all 6 rounds in your chosen tier for a medal* and pin badge<br>
+            or<br>
+            Complete 3 of the 18 rounds for a participation badge
+          </p>
+        </div>
+
+        <div class="detail-card">
+          <h4>💰 Entry Fee</h4>
+          <p><strong>OSA Members:</strong> FREE<br>
+            <strong>Non-members:</strong> £12<br><br>
+            Challenge yourself and earn recognition for your achievements!</p>
+        </div>
+
+        <div class="detail-card">
+          <h4>🎯 How It Works</h4>
+          <p>1. Register for the challenge<br>
+            2. Make payment<br>
+            3. Choose your tier<br>
+            4. Shoot<br>
+            5. Submit scores online<br>
+            6. Receive your medal!</p>
+        </div>
+
+        <div class="detail-card">
+          <h4>* Please Note</h4>
+          <p>
+            You may shoot as many rounds from as many tiers as you
+            like but the medal will only be awarded for your
+            <strong>highest completed tier</strong></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Set the date we're counting down to - April 3, 2026 at 00:00:00
+  const countDownDate = new Date("April 3, 2026 01:00:00").getTime();
+  const countDownDate_En = new Date("March 12, 2026 00:00:00").getTime();
+
+  // Update the countdown every 1 second
+  const countdownInterval = setInterval(function() {
+    // Get today's date and time
+    const now = new Date().getTime();
+
+    // Find the distance between now and the count down date
+    const distance = countDownDate - now;
+    const distance_En = countDownDate_En - now;
+
+    // Time calculations for days, hours, minutes and seconds
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Time calculations for days, hours, minutes and seconds
+    const days_En = Math.floor(distance_En / (1000 * 60 * 60 * 24));
+    const hours_En = Math.floor((distance_En % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes_En = Math.floor((distance_En % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds_En = Math.floor((distance_En % (1000 * 60)) / 1000);
+
+    // Display the result
+    document.getElementById("days").textContent = days;
+    document.getElementById("hours").textContent = hours;
+    document.getElementById("minutes").textContent = minutes;
+    document.getElementById("seconds").textContent = seconds;
+    document.getElementById("days_En").textContent = days_En;
+    document.getElementById("hours_En").textContent = hours_En;
+    document.getElementById("minutes_En").textContent = minutes_En;
+    document.getElementById("seconds_En").textContent = seconds_En;
+
+    // If the challenge countdown is finished, show the "started" message
+    if (distance < 0) {
+      clearInterval(countdownInterval);
+      document.getElementById("countdownSection").style.display = "none";
+      document.getElementById("challengeStarted").style.display = "block";
+    }
+
+    // If registration countdown is finished, show failed countdown and error message
+    if (distance_En < 0) {
+      document.getElementById("registrationTitle").style.display = "none";
+      document.getElementById("registrationCountdown").style.display = "none";
+      document.getElementById("registrationFailed").style.display = "block";
+      document.getElementById("registrationError").style.display = "block";
+    }
+  }, 1000);
+
+  // Run immediately on page load
+  countdownInterval;
+</script>
+
+<footer class="footer">
+  <p>&copy; 2026 Ordnance Survey Archers. Founded 2019.</p>
+  <p><a href="https://www.osarchers.co.uk">Visit our main website</a></p>
+</footer>
+</body>
+</html>
