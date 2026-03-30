@@ -812,3 +812,17 @@ td:first-child {
 .required {
   color: #dc3545;
 }
+.svg-container {
+  position: relative;
+  display: inline-block; /* or block, matching your layout */
+}
+
+.score-input-overlay {
+  position: absolute;
+  transform: translate(-50%, -50%); /* centres the box on the target point */
+}
+.svg-container img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
