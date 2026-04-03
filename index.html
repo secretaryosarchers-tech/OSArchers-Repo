@@ -7,6 +7,11 @@
   <title>Imperial Challenge 2026 - OS Archers</title>
   <link rel="stylesheet" href="./css/imperial-challenge.css">
 
+  <!-- Facebook SDK -->
+  <script async defer crossorigin="anonymous"
+          src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v24.0">
+  </script>
+
   <style>
     /* ── Open-for-entry banner ── */
     @keyframes shimmer {
@@ -157,9 +162,172 @@
     @media (max-width: 540px) {
       .open-banner-inner { padding: 1.5rem 1.2rem 1.6rem; }
     }
+
+    /* ── Social Feed Section ── */
+    .social-feed-section {
+      position: relative;
+      margin: 2rem 0 0;
+      padding: 3rem 1.5rem 3.5rem;
+      background: linear-gradient(160deg, #0d2b0d 0%, #1a3a1a 50%, #0d2b0d 100%);
+      overflow: hidden;
+    }
+
+    /* top shimmer border */
+    .social-feed-section::before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg,
+      transparent 0%,
+      #ffd700 20%,
+      #fff8c0 50%,
+      #ffd700 80%,
+      transparent 100%);
+      background-size: 200% auto;
+      animation: shimmer 2.8s linear infinite;
+    }
+
+    /* subtle arrow pattern overlay */
+    .social-feed-section::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        45deg,
+        rgba(255,215,0,0.015) 0px,
+        rgba(255,215,0,0.015) 1px,
+        transparent 1px,
+        transparent 40px
+      );
+      pointer-events: none;
+    }
+
+    .social-feed-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .social-feed-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #ffd700;
+    }
+
+    .social-feed-eyebrow .fb-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: #1877f2;
+      flex-shrink: 0;
+    }
+
+    .social-feed-eyebrow .fb-icon svg {
+      width: 13px;
+      height: 13px;
+      fill: #fff;
+    }
+
+    .social-feed-headline {
+      margin: 0;
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      text-align: center;
+      background: linear-gradient(90deg,
+      #c8960c 0%,
+      #ffd700 30%,
+      #fff4a0 50%,
+      #ffd700 70%,
+      #c8960c 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3.5s linear infinite;
+    }
+
+    .social-feed-sub {
+      margin: 0;
+      font-size: 1rem;
+      color: #c8e6c9;
+      text-align: center;
+      max-width: 560px;
+      line-height: 1.6;
+    }
+
+    .hashtag-pill {
+      display: inline-block;
+      padding: 0.3rem 0.9rem;
+      border-radius: 50px;
+      border: 1.5px solid rgba(255, 215, 0, 0.5);
+      background: rgba(255, 215, 0, 0.08);
+      color: #ffd700;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.03em;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .hashtag-pill:hover {
+      background: rgba(255, 215, 0, 0.15);
+      border-color: #ffd700;
+    }
+
+    /* Facebook embed wrapper */
+    .fb-embed-wrapper {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,215,0,0.15);
+      background: #fff;
+    }
+
+    .social-feed-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.7rem 1.8rem;
+      border-radius: 50px;
+      border: 2px solid #ffd700;
+      color: #ffd700;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .social-feed-cta:hover {
+      background: #ffd700;
+      color: #0d2b0d;
+    }
+
+    @media (max-width: 540px) {
+      .social-feed-section { padding: 2rem 1rem 2.5rem; }
+      .fb-embed-wrapper { max-width: 100%; }
+    }
   </style>
 </head>
 <body>
+<div id="fb-root"></div>
 <header class="header">
   <div class="logo-container">
     <a href="https://www.osarchers.co.uk" target="_blank">
@@ -269,7 +437,40 @@
       <a href="scores.html" class="cta-button secondary">SUBMIT SCORES</a>
     </div>
   </div>
-</div>
+
+</div><!-- end .container -->
+
+<!-- ── FOLLOW THE CHALLENGE SOCIAL FEED ── -->
+<section class="social-feed-section" aria-label="OS Archers Facebook Feed">
+  <div class="social-feed-inner">
+
+    <div class="social-feed-eyebrow">
+      <span class="fb-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.268h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+        </svg>
+      </span>
+      Follow us on Facebook
+    </div>
+
+    <h2 class="social-feed-headline">Follow the Challenge</h2>
+
+    <p class="social-feed-sub">
+      Stay up to date with news, results, and updates from OS Archers throughout the Imperial Challenge 2026. Taking part? Share your scores and targets using
+      <span class="hashtag-pill">#ImperialChallenge2026</span>
+    </p>
+
+    <!-- Facebook Page embed (identical to Xara widget) -->
+    <div class="fb-embed-wrapper">
+      <div class="fb-page" data-href="https://www.facebook.com/OSArchers/" data-tabs="timeline" data-width="500" data-height="700" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="false"><blockquote cite="https://www.facebook.com/OSArchers/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/OSArchers/">OSA</a></blockquote></div>
+    </div>
+
+    <a href="https://www.facebook.com/OSArchers/" target="_blank" rel="noopener" class="social-feed-cta">
+      Visit our Facebook Page →
+    </a>
+
+  </div>
+</section>
 
 <footer class="footer">
   <p>&copy; 2026 Ordnance Survey Archers. Founded 2019.</p>
