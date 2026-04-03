@@ -1,11 +1,11 @@
-﻿/* ============================================================
+﻿﻿/* ============================================================
    IMPERIAL CHALLENGE 2026 - MASTER STYLESHEET
    Ordnance Survey Archers
    ============================================================ */
 
-/* ============================================================
-   GLOBAL RESET & BASE STYLES
-   ============================================================ */
+  /* ============================================================
+     GLOBAL RESET & BASE STYLES
+     ============================================================ */
 * {
   margin: 0;
   padding: 0;
@@ -811,18 +811,4 @@ td:first-child {
 
 .required {
   color: #dc3545;
-}
-.svg-container {
-  position: relative;
-  display: inline-block; /* or block, matching your layout */
-}
-
-.score-input-overlay {
-  position: absolute;
-  transform: translate(-50%, -50%); /* centres the box on the target point */
-}
-.svg-container img {
-  display: block;
-  width: 100%;
-  height: auto;
 }
