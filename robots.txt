@@ -1,0 +1,12 @@
+﻿User-agent: *
+Allow: /
+
+# Block internal include files from indexing
+Disallow: /header.html
+Disallow: /footer.html
+Disallow: /js/
+
+# Block any legacy Xara-generated files if still present
+Disallow: /index_html_files/
+
+Sitemap: https://www.osarchers.co.uk/sitemap.xml

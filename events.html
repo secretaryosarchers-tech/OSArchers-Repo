@@ -1,0 +1,504 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Photos – OS Archers</title>
+    <meta name="description" content="Photos from OS Archers events, shoots, and club activities. Follow our archery journey at Nursling, Southampton.">
+    <meta name="keywords" content="OS Archers photos, archery club photos Southampton, archery events Hampshire, OS Archers gallery">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="OS Archers">
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="OS Archers">
+    <meta property="og:title" content="Club Photos – OS Archers">
+    <meta property="og:description" content="Photos from OS Archers events, shoots, and club activities in Southampton.">
+    <meta property="og:url" content="https://www.osarchers.co.uk/events.html">
+    <meta property="og:image" content="https://www.osarchers.co.uk/images/OSALogoRev.png">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Club Photos – OS Archers">
+    <meta name="twitter:description" content="Photos from OS Archers events, shoots, and club activities in Southampton.">
+    <meta name="twitter:image" content="https://www.osarchers.co.uk/images/OSALogoRev.png">
+    <link rel="canonical" href="https://www.osarchers.co.uk/events.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;0,900;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* ─── PAGE HERO ─── */
+        .page-hero {
+            min-height: 40vh;
+            background: linear-gradient(145deg, var(--navy-deeper) 0%, var(--navy-dark) 55%, rgba(212,20,90,0.18) 100%);
+            display: flex; align-items: flex-end;
+            padding: 0 5vw 72px;
+            padding-top: var(--nav-h);
+            position: relative; overflow: hidden;
+        }
+        .page-hero-rings {
+            position: absolute; right: 4vw; top: 50%;
+            transform: translateY(-50%);
+            width: 360px; height: 360px; pointer-events: none;
+        }
+        .page-hero-rings circle { fill: none; stroke: rgba(212,20,90,0.12); }
+        .page-hero-inner { position: relative; z-index: 1; max-width: 680px; }
+        .page-hero-eyebrow {
+            display: inline-flex; align-items: center; gap: 12px;
+            font-size: 11px; font-weight: 600;
+            letter-spacing: 3px; text-transform: uppercase;
+            color: var(--crimson-light); margin-bottom: 20px;
+        }
+        .page-hero-eyebrow::before {
+            content: ''; width: 6px; height: 6px;
+            background: var(--crimson); border-radius: 50%;
+        }
+        .page-hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(42px, 6vw, 76px);
+            font-weight: 700; line-height: 1.0;
+            color: var(--white); letter-spacing: -0.3px; margin-bottom: 20px;
+        }
+        .page-hero h1 em { font-style: italic; color: var(--crimson-light); }
+        .page-hero p {
+            font-size: 16.5px; font-weight: 300;
+            color: rgba(255,255,255,0.75);
+            max-width: 520px; line-height: 1.75;
+        }
+
+        /* ─── GALLERY WRAPPER ─── */
+        .gallery-section {
+            background: var(--white);
+            padding: 100px 5vw;
+        }
+        .gallery-section + .gallery-section {
+            background: var(--off-white);
+        }
+        .gallery-section + .gallery-section + .gallery-section {
+            background: var(--white);
+        }
+
+        .gallery-inner { max-width: 1200px; margin: 0 auto; }
+
+        /* ─── EVENT HEADER ─── */
+        .event-header {
+            display: flex; align-items: flex-start;
+            justify-content: space-between; flex-wrap: wrap;
+            gap: 16px; margin-bottom: 48px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid var(--mid-grey);
+        }
+        .event-header-text h2 { margin-bottom: 8px; }
+        .event-meta {
+            display: flex; align-items: center; gap: 18px;
+            flex-wrap: wrap; margin-top: 10px;
+        }
+        .event-meta-item {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 13.5px; color: var(--text-muted);
+        }
+        .event-meta-item span { font-size: 15px; }
+        .event-count {
+            display: inline-block;
+            background: var(--navy-pale); color: var(--navy);
+            font-size: 11px; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            padding: 5px 14px; border-radius: 20px;
+            border: 1px solid var(--mid-grey);
+            white-space: nowrap; align-self: flex-start;
+            margin-top: 6px;
+        }
+
+        /* ─── PHOTO GRID ─── */
+        .photo-grid {
+            columns: 3 280px;
+            column-gap: 14px;
+        }
+
+        .photo-item {
+            break-inside: avoid;
+            margin-bottom: 14px;
+            border-radius: 10px; overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            background: var(--light-grey);
+        }
+
+        .photo-item img {
+            width: 100%; height: auto;
+            display: block;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.03);
+            filter: brightness(0.85);
+        }
+
+        .photo-overlay {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .photo-item:hover .photo-overlay { opacity: 1; }
+        .photo-overlay-icon {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+
+        .photo-caption {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            padding: 10px 14px;
+            background: linear-gradient(to top, rgba(26,22,56,0.85), transparent);
+            color: rgba(255,255,255,0.9);
+            font-size: 12px; line-height: 1.4;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .photo-item:hover .photo-caption { opacity: 1; }
+
+        /* ─── LIGHTBOX ─── */
+        .lightbox {
+            position: fixed; inset: 0; z-index: 1000;
+            background: rgba(10, 8, 30, 0.96);
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .lightbox.open {
+            opacity: 1; pointer-events: all;
+        }
+
+        .lightbox-inner {
+            position: relative;
+            max-width: 1100px; max-height: 90vh;
+            width: 100%;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .lightbox-img-wrap {
+            position: relative;
+            max-height: 80vh;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .lightbox img {
+            max-width: 100%; max-height: 80vh;
+            border-radius: 8px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+            display: block;
+        }
+
+        .lightbox-caption {
+            margin-top: 16px;
+            font-size: 14px; color: rgba(255,255,255,0.6);
+            text-align: center; max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .lightbox-close {
+            position: absolute; top: -48px; right: 0;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white; font-size: 20px; line-height: 1;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .lightbox-close:hover { background: var(--crimson); }
+
+        .lightbox-prev,
+        .lightbox-next {
+            position: fixed; top: 50%; transform: translateY(-50%);
+            width: 48px; height: 48px; border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white; font-size: 20px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+            z-index: 1001;
+        }
+        .lightbox-prev { left: 16px; }
+        .lightbox-next { right: 16px; }
+        .lightbox-prev:hover,
+        .lightbox-next:hover { background: var(--crimson); border-color: var(--crimson); }
+
+        .lightbox-counter {
+            position: absolute; top: -48px; left: 0;
+            font-size: 13px; color: rgba(255,255,255,0.45);
+            letter-spacing: 1px;
+        }
+
+        /* ─── EMPTY PLACEHOLDER ─── */
+        .photo-placeholder {
+            aspect-ratio: 4/3;
+            background: var(--light-grey);
+            border-radius: 10px;
+            border: 2px dashed var(--mid-grey);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 10px; color: var(--text-muted);
+            font-size: 13px; text-align: center; padding: 20px;
+            margin-bottom: 14px;
+        }
+        .photo-placeholder svg { width: 32px; height: 32px; opacity: 0.3; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 600px) {
+            .photo-grid { columns: 2 140px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<!-- ─── PAGE HERO ─── -->
+<section class="page-hero">
+    <svg class="page-hero-rings" viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="180" cy="180" r="162" stroke-width="1"/>
+        <circle cx="180" cy="180" r="122" stroke-width="1"/>
+        <circle cx="180" cy="180" r="82" stroke-width="1"/>
+        <circle cx="180" cy="180" r="42" stroke-width="1" stroke="rgba(212,20,90,0.25)"/>
+    </svg>
+    <div class="page-hero-inner">
+        <div class="page-hero-eyebrow">OS Archers</div>
+        <h1>Club <em>Photos</em></h1>
+        <p>A record of our events, competitions, and sessions at Nursling. Click any photo to view it full size.</p>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     2026 EVENTS
+     ═══════════════════════════════════════════════ -->
+
+<!-- ─── EAST 2026 ─── -->
+<section class="gallery-section" id="east-2026">
+    <div class="gallery-inner">
+        <div class="event-header">
+            <div class="event-header-text">
+                <div class="section-label">Competition</div>
+                <h2>The Easter shoot 2026</h2>
+                <div class="event-meta">
+                    <div class="event-meta-item"><span>📅</span> April 2026</div>
+                    <div class="event-meta-item"><span>📍</span> Home Range</div>
+                </div>
+            </div>
+            <span class="event-count" id="east2026-count">Loading photos…</span>
+        </div>
+
+        <div class="photo-grid" id="east2026-grid">
+            <!-- Photos: place files in /images/events/east2026/
+                 Naming convention: east2026-01.jpg, east2026-02.jpg etc.
+                 Update the JS below with the correct count and any captions. -->
+        </div>
+    </div>
+</section>
+
+<!-- ─── ADD MORE EVENTS BELOW ─── -->
+<section class="gallery-section" id="halloween-2025">
+    <div class="gallery-inner">
+        <div class="event-header">
+            <div class="event-header-text">
+                <div class="section-label">Competition</div>
+                <h2>The Halloween shoot 2025</h2>
+                <div class="event-meta">
+                    <div class="event-meta-item"><span>📅</span> October 2025</div>
+                    <div class="event-meta-item"><span>📍</span> Home Range</div>
+                </div>
+            </div>
+            <span class="event-count" id="halloween-count">Loading photos…</span>
+        </div>
+
+        <div class="photo-grid" id="halloween2025-grid">
+            <!-- Photos: place files in /images/events/east2026/
+                 Naming convention: east2026-01.jpg, halloween2025-02.jpg etc.
+                 Update the JS below with the correct count and any captions. -->
+        </div>
+    </div>
+</section>
+<!-- Copy the section block above, give it a new id, update the event-header text,
+     and add a matching JS block in the script below. -->
+
+
+<!-- ─── LIGHTBOX ─── -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <div class="lightbox-inner">
+        <span class="lightbox-counter" id="lb-counter"></span>
+        <button class="lightbox-close" id="lb-close" aria-label="Close">✕</button>
+        <div class="lightbox-img-wrap">
+            <img id="lb-img" src="" alt="">
+        </div>
+        <p class="lightbox-caption" id="lb-caption"></p>
+    </div>
+    <button class="lightbox-prev" id="lb-prev" aria-label="Previous photo">&#8249;</button>
+    <button class="lightbox-next" id="lb-next" aria-label="Next photo">&#8250;</button>
+</div>
+
+<div id="site-footer"></div>
+<script src="/js/includes.js"></script>
+
+<script>
+    /* ═══════════════════════════════════════════════════
+       GALLERY CONFIGURATION
+       Add each event as an entry in the EVENTS array.
+       photos: number of images in the folder.
+       captions: optional array of strings (one per photo).
+       ═══════════════════════════════════════════════════ */
+
+    var EVENTS = [
+        {
+            gridId:   'east2026-grid',
+            countId:  'east2026-count',
+            folder:   '/images/events/East2026/',
+            prefix:   'East2026-',
+            photos:   19,
+            ext:      'jpg',
+            captions: [
+                'On the shooting line at the East',
+                'Archers competing at long distance',
+                'Scoring after an end',
+                'Pulling arrows from the target',
+                'More scoring',
+                'More shooting',
+                'The long walk to the target',
+                'That's a very long way',
+                'Even more shooting',
+                'Ducks spotted on the course',
+                'More ducks',
+                'Even more ducks',
+                'Eggs found at the venue',
+                'Fruit at the refreshment stop',
+                'More fruit',
+                'Lots more fruit',
+                'The crossword to pass the time',
+                'More crossword action',
+                'Even more crossword',
+                'A game of Uno between ends'
+            ]
+        },
+        {
+            gridId:   'halloween2025-grid',
+            countId:  'halloween2025-count',
+            folder:   '/images/events/Halloween2025/',
+            prefix:   'Halloween2025-',
+            photos:   20,
+            ext:      'jpg',
+            captions: []
+        },
+        /* ── TEMPLATE FOR NEXT EVENT ──────────────────────
+        {
+          gridId:   'halloween2026-grid',
+          countId:  'halloween2026-count',
+          folder:   '/images/events/halloween2026/',
+          prefix:   'halloween2026-',
+          photos:   0,
+          ext:      'jpg',
+          captions: []
+        },
+        ────────────────────────────────────────────────── */
+    ];
+
+    /* ─── LIGHTBOX STATE ─── */
+    var allPhotos = []; // flat list of all {src, caption} across all events
+    var currentIndex = 0;
+
+    /* ─── BUILD GRIDS ─── */
+    EVENTS.forEach(function (ev) {
+        var grid  = document.getElementById(ev.gridId);
+        var countEl = document.getElementById(ev.countId);
+        if (!grid) return;
+
+        if (ev.photos === 0) {
+            grid.innerHTML = '<div class="photo-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>Photos coming soon</span></div>';
+            if (countEl) countEl.textContent = 'Coming soon';
+            return;
+        }
+
+        if (countEl) countEl.textContent = ev.photos + ' photo' + (ev.photos !== 1 ? 's' : '');
+
+        // Record the start index in allPhotos for this event
+        var startIndex = allPhotos.length;
+
+        for (var i = 1; i <= ev.photos; i++) {
+            var num     = String(i).padStart(2, '0');
+            var src     = ev.folder + ev.prefix + num + '.' + ev.ext;
+            var caption = ev.captions[i - 1] || '';
+
+            // Push to global list for lightbox navigation
+            allPhotos.push({ src: src, caption: caption });
+
+            var item = document.createElement('div');
+            item.className = 'photo-item';
+            item.setAttribute('data-index', startIndex + i - 1);
+            item.innerHTML =
+                '<img src="' + src + '" alt="' + (caption || 'Club photo ' + i) + '" loading="lazy">' +
+                '<div class="photo-overlay"><div class="photo-overlay-icon">🔍</div></div>' +
+                (caption ? '<div class="photo-caption">' + caption + '</div>' : '');
+
+            item.addEventListener('click', function () {
+                openLightbox(parseInt(this.getAttribute('data-index')));
+            });
+
+            grid.appendChild(item);
+        }
+    });
+
+    /* ─── LIGHTBOX FUNCTIONS ─── */
+    var lightbox  = document.getElementById('lightbox');
+    var lbImg     = document.getElementById('lb-img');
+    var lbCaption = document.getElementById('lb-caption');
+    var lbCounter = document.getElementById('lb-counter');
+
+    function openLightbox(index) {
+        currentIndex = index;
+        showPhoto();
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        lightbox.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function showPhoto() {
+        var photo = allPhotos[currentIndex];
+        lbImg.src = photo.src;
+        lbImg.alt = photo.caption || 'Club photo';
+        lbCaption.textContent = photo.caption || '';
+        lbCounter.textContent = (currentIndex + 1) + ' / ' + allPhotos.length;
+    }
+
+    function prevPhoto() {
+        currentIndex = (currentIndex - 1 + allPhotos.length) % allPhotos.length;
+        showPhoto();
+    }
+
+    function nextPhoto() {
+        currentIndex = (currentIndex + 1) % allPhotos.length;
+        showPhoto();
+    }
+
+    document.getElementById('lb-close').addEventListener('click', closeLightbox);
+    document.getElementById('lb-prev').addEventListener('click', prevPhoto);
+    document.getElementById('lb-next').addEventListener('click', nextPhoto);
+
+    // Close on backdrop click
+    lightbox.addEventListener('click', function (e) {
+        if (e.target === lightbox) closeLightbox();
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function (e) {
+        if (!lightbox.classList.contains('open')) return;
+        if (e.key === 'ArrowLeft')  prevPhoto();
+        if (e.key === 'ArrowRight') nextPhoto();
+        if (e.key === 'Escape')     closeLightbox();
+    });
+</script>
+
+</body>
+</html>

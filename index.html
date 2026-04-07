@@ -1,12 +1,26 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OS Archers – Archery Club, Southampton</title>
-  <meta name="description" content="OS Archers is an Archery GB affiliated club based in Nursling, Southampton. Founded April 2019, we provide opportunities for people to take up archery in an open, supportive and family friendly environment.">
-  <meta name="keywords" content="OS Archers, Ordnance Survey Archers, archery Southampton, Nursling archery, AGB affiliated, beginner archery, recurve, compound, longbow, Hampshire archery">
-  <link rel="canonical" href="https://www.osarchers.co.uk">
+  <title>OS Archers – Archery Club in Southampton | Nursling</title>
+  <meta name="description" content="OS Archers is an Archery GB affiliated archery club based in Nursling, Southampton. Welcoming beginners and experienced archers of all ages and bow styles.">
+  <meta name="keywords" content="archery club Southampton, OS Archers, Nursling archery, beginner archery Southampton, AGB affiliated, recurve compound longbow barebow Hampshire">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="OS Archers">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="OS Archers">
+  <meta property="og:title" content="OS Archers – Archery Club, Southampton">
+  <meta property="og:description" content="A welcoming, AGB affiliated archery club in Nursling, Southampton. Open to all ages and abilities. Beginners courses running throughout 2026.">
+  <meta property="og:url" content="https://www.osarchers.co.uk/">
+  <meta property="og:image" content="https://www.osarchers.co.uk/images/OSALogoRev.png">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="OS Archers – Archery Club, Southampton">
+  <meta name="twitter:description" content="A welcoming, AGB affiliated archery club in Nursling, Southampton. Open to all ages and abilities. Beginners courses running throughout 2026.">
+  <meta name="twitter:image" content="https://www.osarchers.co.uk/images/OSALogoRev.png">
+  <link rel="canonical" href="https://www.osarchers.co.uk/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;0,900;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -182,70 +196,83 @@
 
   <script>
     (function () {
-      const FEED = 'https://corsproxy.io/?url=https://archery-records.net/feeds/xml?method=clubrecords%26uid=5ed53ca6-3c7f-43cc-962a-6b6e439f3ee8';
+      const PROXIES = [
+        '/proxy/records.php',
+      ];
       const container = document.getElementById('records-container');
       const CLASS_ORDER = ['Recurve', 'Compound', 'Barebow', 'Longbow', 'Traditional'];
 
-      fetch(FEED)
-              .then(function (r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status);
-                return r.text();
-              })
-              .then(function (xml) {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(xml, 'application/xml');
-                const records = Array.from(doc.querySelectorAll('record'));
-
-                if (!records.length) {
-                  container.innerHTML = '<div class="records-error">No records found.</div>';
-                  return;
-                }
-
-                // Group by Class
-                const groups = {};
-                records.forEach(function (r) {
-                  const cls = r.querySelector('Class').textContent.trim();
-                  if (!groups[cls]) groups[cls] = [];
-                  groups[cls].push({
-                    round:  r.querySelector('Round').textContent.trim(),
-                    score:  r.querySelector('Score').textContent.trim(),
-                    hits:   r.querySelector('Hits').textContent.trim(),
-                    golds:  r.querySelector('Golds').textContent.trim(),
-                    xs:     r.querySelector('Xs').textContent.trim(),
-                    date:   r.querySelector('Date').textContent.trim()
-                  });
+      function tryProxy(index) {
+        if (index >= PROXIES.length) {
+          container.innerHTML = '<div class="records-error">Unable to load records — please visit <a href="https://archery-records.net/" target="_blank" rel="noopener" style="color:var(--crimson);">Archery Records</a> directly.</div>';
+          return;
+        }
+        fetch(PROXIES[index])
+                .then(function (r) {
+                  if (!r.ok) throw new Error('HTTP ' + r.status);
+                  return r.text();
+                })
+                .then(function (xml) {
+                  processXml(xml);
+                })
+                .catch(function () {
+                  tryProxy(index + 1);
                 });
+      }
 
-                // Sort classes, then rows by round name
-                const classKeys = CLASS_ORDER.filter(function (c) { return groups[c]; })
-                        .concat(Object.keys(groups).filter(function (c) { return !CLASS_ORDER.includes(c); }));
+      function processXml(xml) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(xml, 'application/xml');
+        const records = Array.from(doc.querySelectorAll('record'));
 
-                let html = '';
-                classKeys.forEach(function (cls) {
-                  const rows = groups[cls].slice().sort(function (a, b) { return a.round.localeCompare(b.round); });
-                  html += '<div class="records-class-heading">' + cls + '</div>';
-                  html += '<table class="records-table"><thead><tr>';
-                  html += '<th>Round</th><th>Score</th><th>Hits</th><th>Golds</th><th>Xs</th><th>Date</th>';
-                  html += '</tr></thead><tbody>';
-                  rows.forEach(function (rec) {
-                    html += '<tr>';
-                    html += '<td>' + rec.round + '</td>';
-                    html += '<td class="score-cell">' + rec.score + '</td>';
-                    html += '<td>' + rec.hits + '</td>';
-                    html += '<td>' + rec.golds + '</td>';
-                    html += '<td>' + rec.xs + '</td>';
-                    html += '<td class="date-cell">' + rec.date + '</td>';
-                    html += '</tr>';
-                  });
-                  html += '</tbody></table>';
-                });
+        if (!records.length) {
+          container.innerHTML = '<div class="records-error">No records found.</div>';
+          return;
+        }
 
-                container.innerHTML = html;
-              })
-              .catch(function (err) {
-                container.innerHTML = '<div class="records-error">Unable to load records. Please try again later.</div>';
-                console.error('Records feed error:', err);
-              });
+        // Group by Class
+        const groups = {};
+        records.forEach(function (r) {
+          const cls = r.querySelector('Class').textContent.trim();
+          if (!groups[cls]) groups[cls] = [];
+          groups[cls].push({
+            round:  r.querySelector('Round').textContent.trim(),
+            score:  r.querySelector('Score').textContent.trim(),
+            hits:   r.querySelector('Hits').textContent.trim(),
+            golds:  r.querySelector('Golds').textContent.trim(),
+            xs:     r.querySelector('Xs').textContent.trim(),
+            date:   r.querySelector('Date').textContent.trim()
+          });
+        });
+
+        // Sort classes, then rows by round name
+        const classKeys = CLASS_ORDER.filter(function (c) { return groups[c]; })
+                .concat(Object.keys(groups).filter(function (c) { return !CLASS_ORDER.includes(c); }));
+
+        let html = '';
+        classKeys.forEach(function (cls) {
+          const rows = groups[cls].slice().sort(function (a, b) { return a.round.localeCompare(b.round); });
+          html += '<div class="records-class-heading">' + cls + '</div>';
+          html += '<table class="records-table"><thead><tr>';
+          html += '<th>Round</th><th>Score</th><th>Hits</th><th>Golds</th><th>Xs</th><th>Date</th>';
+          html += '</tr></thead><tbody>';
+          rows.forEach(function (rec) {
+            html += '<tr>';
+            html += '<td>' + rec.round + '</td>';
+            html += '<td class="score-cell">' + rec.score + '</td>';
+            html += '<td>' + rec.hits + '</td>';
+            html += '<td>' + rec.golds + '</td>';
+            html += '<td>' + rec.xs + '</td>';
+            html += '<td class="date-cell">' + rec.date + '</td>';
+            html += '</tr>';
+          });
+          html += '</tbody></table>';
+        });
+
+        container.innerHTML = html;
+      }
+
+      tryProxy(0);
     })();
   </script>
 </section>
@@ -312,14 +339,14 @@
           <span>OS Archers on Facebook</span>
         </div>
         <div class="fb-inner">
-          <iframe
-                  src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FOSArchers&tabs=timeline&width=380&height=400&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=false&appId"
-                  width="380" height="400"
-                  style="border:none;overflow:hidden"
-                  scrolling="no" frameborder="0"
-                  allowfullscreen="true"
-                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
-          </iframe>
+          <p class="fb-desc">Follow us on Facebook for the latest club news, shoot photos, event announcements, and updates from the line.</p>
+          <a href="https://www.facebook.com/OSArchers/" target="_blank" rel="noopener" class="fb-cta">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+            Visit our Facebook Page
+          </a>
+          <p class="fb-handle">facebook.com/OSArchers</p>
         </div>
       </div>
     </div>
