@@ -317,30 +317,7 @@
 </head>
 <body>
 
-<!-- ─── NAVIGATION ─── -->
-<nav>
-  <a href="index.html" class="nav-logo">
-    <img src="images/OSALogoRev.png" alt="OS Archers logo"
-         style="mix-blend-mode:screen;"
-         onerror="this.style.display='none';document.getElementById('logo-text').style.display='flex';">
-    <div id="logo-text" class="nav-logo-text" style="display:none;">
-      <strong>OS Archers</strong>
-      <span>Nursling · Southampton</span>
-    </div>
-  </a>
-  <ul class="nav-links" id="navLinks">
-    <li><a href="about.html">About</a></li>
-    <li><a href="index.html#disciplines">Disciplines</a></li>
-    <li><a href="index.html#programmes">Programmes</a></li>
-    <li><a href="index.html#records">Records</a></li>
-    <li><a href="index.html#news">News</a></li>
-    <li><a href="index.html#find-us">Find Us</a></li>
-    <li><a href="courses.html" class="nav-cta">Join Us</a></li>
-  </ul>
-  <button class="hamburger" id="hamburger" aria-label="Open menu">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
+<div id="site-header"></div>
 
 <!-- ─── PAGE HERO ─── -->
 <section class="page-hero">
@@ -542,7 +519,7 @@
         <p>Log in to add scores, view your history, and check your handicap.</p>
         <span class="quick-link-arrow">Open Golden Records →</span>
       </a>
-      <a href="index.html#records" class="quick-link-card">
+      <a href="/index.html#records" class="quick-link-card">
         <span class="quick-link-icon">📋</span>
         <h3>Club Records</h3>
         <p>See the current OS Archers club records, updated live from Golden Records.</p>
@@ -560,13 +537,13 @@
         <p>Upcoming regional competitions and events — maintained by Brighton Bowmen.</p>
         <span class="quick-link-arrow">View Tournaments →</span>
       </a>
-      <a href="clubbowsilf.html" class="quick-link-card">
+      <a href="/clubbowsilf.html" class="quick-link-card">
         <span class="quick-link-icon">🏹</span>
         <h3>Club Bows</h3>
         <p>View the club's loaner bow collection, available to members at sessions.</p>
         <span class="quick-link-arrow">View Club Bows →</span>
       </a>
-      <a href="fieldcap.html" class="quick-link-card">
+      <a href="/fieldcap.html" class="quick-link-card">
         <span class="quick-link-icon">🎯</span>
         <h3>Field Captain Guide</h3>
         <p>Range setup, whistle commands, target safety, and close-down procedures.</p>
@@ -579,64 +556,51 @@
         <span class="quick-link-arrow">Email the Secretary →</span>
       </a>
     </div>
+
+    <div class="tools-divider">
+      <div class="section-label" style="margin-top:64px;">Archery Tools</div>
+      <h2>Useful Archery Tools &amp; Resources</h2>
+      <p class="scoring-links-intro">A collection of useful external tools and learning resources for archers of all levels.</p>
+    </div>
+    <div class="quick-links-grid">
+      <a href="https://archeryscorepad.com/" target="_blank" rel="noopener" class="quick-link-card">
+        <span class="quick-link-icon">📱</span>
+        <h3>Archery Score Pad</h3>
+        <p>A popular mobile scoring app for logging your rounds on the range. Supports a wide range of round types and exports directly to Golden Records.</p>
+        <span class="quick-link-arrow">Visit Archery Score Pad →</span>
+      </a>
+      <a href="https://agb.sport80.com/" target="_blank" rel="noopener" class="quick-link-card">
+        <span class="quick-link-icon">🎓</span>
+        <h3>Sport 80 — AGB Portal</h3>
+        <p>The Archery GB member portal for managing your membership, classifications, and handicap records at national level.</p>
+        <span class="quick-link-arrow">Open Sport 80 →</span>
+      </a>
+      <a href="https://www.onlinearcheryacademy.com/" target="_blank" rel="noopener" class="quick-link-card">
+        <span class="quick-link-icon">🎥</span>
+        <h3>Online Archery Academy</h3>
+        <p>Video-based coaching and technique guidance from experienced coaches. A great resource for archers looking to improve between sessions.</p>
+        <span class="quick-link-arrow">Visit Online Archery Academy →</span>
+      </a>
+      <a href="https://ianseo.net/" target="_blank" rel="noopener" class="quick-link-card">
+        <span class="quick-link-icon">🏅</span>
+        <h3>Ianseo</h3>
+        <p>The competition management software used at many national and international archery tournaments. Useful for checking live results at events.</p>
+        <span class="quick-link-arrow">Visit Ianseo →</span>
+      </a>
+      <a href="https://archerygeekery.co.uk/" target="_blank" rel="noopener" class="quick-link-card">
+        <span class="quick-link-icon">🔧</span>
+        <h3>Archery Geekery</h3>
+        <p>A handy toolkit for archers — includes handicap calculators, round score predictors, and other useful archery maths tools.</p>
+        <span class="quick-link-arrow">Visit Archery Geekery →</span>
+      </a>
+    </div>
   </div>
 </section>
 
-<!-- ─── FOOTER ─── -->
-<footer>
-  <div class="footer-grid">
-    <div class="footer-brand">
-      <h3>OS Archers</h3>
-      <p>A family-friendly, Archery GB affiliated archery club based in Nursling, Southampton. Founded April 2019. Open to all ages and abilities.</p>
-      <div class="footer-affil">
-        <span class="affil-badge">AGB</span>
-        <span class="affil-badge">SCAS</span>
-        <span class="affil-badge">HAA</span>
-      </div>
-    </div>
-    <div class="footer-col">
-      <h4>Club</h4>
-      <ul>
-        <li><a href="about.html">About Us</a></li>
-        <li><a href="index.html#disciplines">Disciplines</a></li>
-        <li><a href="events.html">Club Photos</a></li>
-        <li><a href="clubbowsilf.html">Club Bows</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Schemes</h4>
-      <ul>
-        <li><a href="courses.html">Beginners Course</a></li>
-        <li><a href="https://www.osarchers.co.uk/imperial">Imperial Challenge</a></li>
-        <li><a href="252.html">252 Scheme</a></li>
-        <li><a href="hwto.html">Members Area</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Links</h4>
-      <ul>
-        <li><a href="https://archerygb.org/" target="_blank" rel="noopener">Archery GB</a></li>
-        <li><a href="https://scasarchery.org.uk/" target="_blank" rel="noopener">SCAS</a></li>
-        <li><a href="https://haa.org.uk/" target="_blank" rel="noopener">Hampshire Archery</a></li>
-        <li><a href="https://www.worldarchery.sport/" target="_blank" rel="noopener">World Archery</a></li>
-        <li><a href="https://agb.sport80.com/" target="_blank" rel="noopener">Sport 80</a></li>
-        <li><a href="https://archery-records.net/" target="_blank" rel="noopener">Archery Records</a></li>
-        <li><a href="https://www.brightonbowmen.net/tournament-diary/" target="_blank" rel="noopener">Tournament Diary <span style="font-size:10px;color:rgba(255,255,255,0.35);">(Brighton Bowmen)</span></a></li>
-        <li><a href="https://www.facebook.com/OSArchers/" target="_blank" rel="noopener">Facebook</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>© 2025 OS Archers. All rights reserved.</p>
-    <a href="mailto:secretary@osarchers.co.uk">secretary@osarchers.co.uk</a>
-  </div>
-</footer>
+<div id="site-footer"></div>
 
-<script>
-  document.getElementById('hamburger').addEventListener('click', function () {
-    document.getElementById('navLinks').classList.toggle('open');
-  });
-</script>
 
+
+<script src="/js/includes.js"></script>
 </body>
 </html>

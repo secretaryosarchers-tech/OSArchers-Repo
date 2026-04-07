@@ -409,32 +409,7 @@
 </head>
 <body>
 
-<!-- ─── NAVIGATION ─── -->
-<nav>
-    <a href="index.html" class="nav-logo">
-        <img src="images/OSALogoRev.png" alt="OS Archers logo"
-             style="mix-blend-mode:screen;"
-             onerror="this.style.display='none';document.getElementById('logo-text').style.display='flex';">
-        <div id="logo-text" class="nav-logo-text" style="display:none;">
-            <strong>OS Archers</strong>
-            <span>Nursling · Southampton</span>
-        </div>
-    </a>
-
-    <ul class="nav-links" id="navLinks">
-        <li><a href="about.html" style="color:var(--crimson-light);">About</a></li>
-        <li><a href="index.html#disciplines">Disciplines</a></li>
-        <li><a href="index.html#programmes">Programmes</a></li>
-        <li><a href="index.html#records">Records</a></li>
-        <li><a href="index.html#news">News</a></li>
-        <li><a href="index.html#find-us">Find Us</a></li>
-        <li><a href="courses.html" class="nav-cta">Join Us</a></li>
-    </ul>
-
-    <button class="hamburger" id="hamburger" aria-label="Open menu">
-        <span></span><span></span><span></span>
-    </button>
-</nav>
+<div id="site-header"></div>
 
 <!-- ─── PAGE HERO ─── -->
 <section class="page-hero">
@@ -495,7 +470,7 @@
 <section class="about-mission">
     <div class="about-mission-inner">
         <div class="about-mission-image">
-            <img src="/images/Halloween2025.jpg" alt="Archer on the line"
+            <img src="/images/about-shooting.jpg" alt="Archer on the line"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
             <div class="img-placeholder" style="display:none;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
@@ -527,7 +502,7 @@
 
         <div class="committee-card">
             <div class="committee-card-photo">
-                <img src="/images/committee-placeholder.png" alt="Kevin Partridge"
+                <img src="/images/committee-chairman.jpg" alt="Kevin Partridge"
                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                 <div class="img-placeholder" style="display:none;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
@@ -563,7 +538,7 @@
 
         <div class="committee-card">
             <div class="committee-card-photo">
-                <img src="/images/committee-placeholder.png" alt="Louise Hewett"
+                <img src="/images/committee-treasurer.jpg" alt="Louise Hewett"
                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                 <div class="img-placeholder" style="display:none;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
@@ -587,7 +562,7 @@
     <div class="affiliations-inner">
         <div class="section-label">Affiliations</div>
         <h2>Who We Belong To</h2>
-        <p class="affiliations-intro">OS Archers is affiliated with the national and regional governing bodies for archery in the UK. Membership of OS Archers includes membership fees for these organisations.</p>
+        <p class="affiliations-intro">OS Archers is affiliated with the national and regional governing bodies for archery in the UK. Club membership includes SCAS and HAA fees — AGB is paid separately. <a href="fees.html" style="color:var(--crimson-light);font-weight:500;">View full fee details →</a></p>
 
         <div class="affil-cards">
             <a href="https://archerygb.org/" target="_blank" rel="noopener" class="affil-card">
@@ -703,63 +678,10 @@
     </div>
 </section>
 
-<!-- ─── FOOTER ─── -->
-<footer>
-    <div class="footer-grid">
-        <div class="footer-brand">
-            <h3>OS Archers</h3>
-            <p>A family-friendly, Archery GB affiliated archery club based in Nursling, Southampton. Founded April 2019. Open to all ages and abilities.</p>
-            <div class="footer-affil">
-                <span class="affil-badge">AGB</span>
-                <span class="affil-badge">SCAS</span>
-                <span class="affil-badge">HAA</span>
-            </div>
-        </div>
-        <div class="footer-col">
-            <h4>Club</h4>
-            <ul>
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="index.html#disciplines">Disciplines</a></li>
-                <li><a href="events.html">Club Photos</a></li>
-                <li><a href="clubbowsilf.html">Club Bows</a></li>
-            </ul>
-        </div>
-        <div class="footer-col">
-            <h4>Schemes</h4>
-            <ul>
-                <li><a href="courses.html">Beginners Course</a></li>
-                <li><a href="https://www.osarchers.co.uk/imperial">Imperial Challenge</a></li>
-                <li><a href="252.html">252 Scheme</a></li>
-                <li><a href="hwto.html">Members Area</a></li>
-            </ul>
-        </div>
-        <div class="footer-col">
-            <h4>Links</h4>
-            <ul>
-                <li><a href="https://archerygb.org/" target="_blank" rel="noopener">Archery GB</a></li>
-                <li><a href="https://scasarchery.org.uk/" target="_blank" rel="noopener">SCAS</a></li>
-                <li><a href="https://haa.org.uk/" target="_blank" rel="noopener">Hampshire Archery</a></li>
-                <li><a href="https://www.worldarchery.sport/" target="_blank" rel="noopener">World Archery</a></li>
-                <li><a href="https://agb.sport80.com/" target="_blank" rel="noopener">Sport 80</a></li>
-                <li><a href="https://archery-records.net/" target="_blank" rel="noopener">Archery Records</a></li>
-                <li><a href="https://www.brightonbowmen.net/tournament-diary/" target="_blank" rel="noopener">Tournament Diary <span style="font-size:10px;color:rgba(255,255,255,0.35);">(Brighton Bowmen)</span></a></li>
-                <li><a href="https://www.facebook.com/OSArchers/" target="_blank" rel="noopener">Facebook</a></li>
-            </ul>
-        </div>
-    </div>
+<div id="site-footer"></div>
 
-    <div class="footer-bottom">
-        <p>© 2025 OS Archers. All rights reserved.</p>
-        <a href="mailto:secretary@osarchers.co.uk">secretary@osarchers.co.uk</a>
-    </div>
-</footer>
 
-<script>
-    // Hamburger menu
-    document.getElementById('hamburger').addEventListener('click', function () {
-        document.getElementById('navLinks').classList.toggle('open');
-    });
-</script>
 
+<script src="/js/includes.js"></script>
 </body>
 </html>
