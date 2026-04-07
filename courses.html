@@ -1,0 +1,622 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beginners Course – OS Archers</title>
+  <meta name="description" content="Start your archery journey with OS Archers. Our structured beginners course runs across two mornings and covers everything you need to safely pick up a bow and shoot with confidence.">
+  <meta name="keywords" content="OS Archers, beginners course, archery lessons Southampton, learn archery, Nursling, AGB beginners">
+  <link rel="canonical" href="https://www.osarchers.co.uk/courses.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;0,900;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* ─── PAGE HERO ─── */
+    .page-hero {
+      min-height: 44vh;
+      background:
+              linear-gradient(145deg, rgba(26,22,56,0.96) 0%, rgba(42,36,88,0.88) 50%, rgba(212,20,90,0.16) 100%),
+              url('/images/courses-hero.jpg') center/cover no-repeat;
+      display: flex; align-items: flex-end;
+      padding: 0 5vw 72px;
+      padding-top: var(--nav-h);
+      position: relative; overflow: hidden;
+    }
+    .page-hero-placeholder {
+      position: absolute; inset: 0;
+      background: linear-gradient(145deg, var(--navy-deeper) 0%, var(--navy-dark) 50%, rgba(212,20,90,0.18) 100%);
+    }
+    .page-hero-inner { position: relative; z-index: 1; max-width: 720px; }
+    .page-hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--crimson-light); margin-bottom: 20px;
+    }
+    .page-hero-eyebrow::before {
+      content: ''; width: 6px; height: 6px;
+      background: var(--crimson); border-radius: 50%;
+    }
+    .page-hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(42px, 6vw, 76px);
+      font-weight: 700; line-height: 1.0;
+      color: var(--white); letter-spacing: -0.3px; margin-bottom: 20px;
+    }
+    .page-hero h1 em { font-style: italic; color: var(--crimson-light); }
+    .page-hero p {
+      font-size: 16.5px; font-weight: 300;
+      color: rgba(255,255,255,0.75);
+      max-width: 520px; line-height: 1.75;
+    }
+
+    /* ─── INTRO ─── */
+    .courses-intro {
+      background: var(--white);
+      padding: 100px 5vw;
+    }
+    .courses-intro-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .courses-intro-text h2 { margin-bottom: 22px; }
+    .courses-intro-text p {
+      color: var(--text-mid); font-size: 15.5px;
+      margin-bottom: 18px; line-height: 1.75;
+    }
+    .courses-intro-text p strong { color: var(--navy-dark); }
+    .courses-intro-text p:last-child { margin-bottom: 0; }
+
+    .courses-quick-facts {
+      background: var(--navy-deeper);
+      border-radius: 14px; padding: 40px 36px;
+      display: flex; flex-direction: column; gap: 22px;
+    }
+    .courses-quick-facts h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 700;
+      color: var(--white); margin-bottom: 4px;
+    }
+    .fact-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .fact-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .fact-icon {
+      font-size: 20px; flex-shrink: 0;
+      width: 38px; height: 38px;
+      background: rgba(212,20,90,0.18);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(212,20,90,0.22);
+    }
+    .fact-text strong {
+      display: block; font-size: 13px; font-weight: 600;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 1px; text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .fact-text span {
+      font-size: 15px; color: var(--white); line-height: 1.5;
+    }
+
+    /* ─── WHAT TO EXPECT ─── */
+    .courses-expect {
+      background: var(--off-white);
+      padding: 100px 5vw;
+    }
+    .courses-expect-header {
+      text-align: center; max-width: 540px;
+      margin: 0 auto 60px;
+    }
+    .courses-expect-header .section-label { justify-content: center; }
+    .courses-expect-header h2 { margin-bottom: 14px; }
+    .courses-expect-header p { color: var(--text-muted); font-size: 15.5px; margin-top: 14px; }
+
+    .expect-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px; max-width: 1100px; margin: 0 auto;
+    }
+    .expect-card {
+      background: var(--white);
+      border-radius: 12px; padding: 34px 28px;
+      border: 1px solid var(--mid-grey);
+      position: relative; overflow: hidden;
+      transition: transform 0.22s, box-shadow 0.22s;
+    }
+    .expect-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 18px 50px rgba(61,53,128,0.12);
+    }
+    .expect-card::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0; height: 3px;
+      background: var(--crimson);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .expect-card:hover::after { transform: scaleX(1); }
+    .expect-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 52px; font-weight: 700;
+      color: var(--mid-grey); line-height: 1;
+      margin-bottom: 14px; letter-spacing: -1px;
+    }
+    .expect-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 21px; font-weight: 700;
+      color: var(--navy-dark); margin-bottom: 10px;
+    }
+    .expect-card p { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+
+    /* ─── COURSE DATES ─── */
+    .courses-dates {
+      background: var(--white);
+      padding: 100px 5vw;
+    }
+    .courses-dates-header { margin-bottom: 48px; }
+    .courses-dates-header h2 { margin-bottom: 12px; }
+    .courses-dates-header p { color: var(--text-muted); font-size: 15.5px; max-width: 520px; }
+
+    .dates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 22px; max-width: 1100px;
+    }
+
+    .date-card {
+      border-radius: 14px; overflow: hidden;
+      border: 1px solid var(--mid-grey);
+      display: flex; flex-direction: column;
+    }
+    .date-card-header {
+      background: var(--navy);
+      padding: 18px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .date-card-header h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; font-weight: 700;
+      color: var(--white);
+    }
+    .date-ref {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+    }
+    .date-card-body {
+      padding: 24px;
+      flex: 1; display: flex; flex-direction: column; gap: 14px;
+    }
+    .date-sessions {
+      font-size: 14px; font-weight: 600;
+      color: var(--navy-dark);
+    }
+    .date-detail {
+      font-size: 13.5px; color: var(--text-mid);
+      line-height: 1.65;
+    }
+    .date-card-footer {
+      padding: 0 24px 24px;
+    }
+    .date-card.available .date-card-header { background: var(--navy); }
+    .date-card.adhoc .date-card-header { background: var(--text-muted); }
+
+    .date-status-available {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: #2a9d5c; margin-bottom: 16px;
+    }
+    .date-status-available::before {
+      content: ''; width: 7px; height: 7px;
+      background: #2a9d5c; border-radius: 50%;
+      animation: blink 2s ease-in-out infinite;
+    }
+    .date-status-adhoc {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 16px;
+    }
+    .date-status-adhoc::before {
+      content: ''; width: 7px; height: 7px;
+      background: var(--text-muted); border-radius: 50%;
+    }
+
+    .btn-book {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--crimson); color: var(--white);
+      font-weight: 600; font-size: 13.5px;
+      padding: 11px 22px; border-radius: 6px;
+      text-decoration: none; width: 100%;
+      justify-content: center;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-book:hover { background: var(--crimson-dark); transform: translateY(-2px); }
+    .btn-book-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--text-muted);
+      font-weight: 500; font-size: 13.5px;
+      padding: 11px 22px; border-radius: 6px;
+      text-decoration: none; width: 100%;
+      justify-content: center;
+      border: 1.5px solid var(--mid-grey);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-book-outline:hover { border-color: var(--navy-light); color: var(--navy); }
+
+    /* ─── WHAT TO BRING ─── */
+    .courses-bring {
+      background: var(--navy-deeper);
+      padding: 100px 5vw;
+      position: relative; overflow: hidden;
+    }
+    .courses-bring::before {
+      content: ''; position: absolute;
+      right: -80px; bottom: -80px;
+      width: 420px; height: 420px; border-radius: 50%;
+      border: 1px solid rgba(212,20,90,0.1);
+      pointer-events: none;
+    }
+    .courses-bring-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+      position: relative; z-index: 1;
+    }
+    .courses-bring-text .section-label { color: var(--crimson-light); }
+    .courses-bring-text .section-label::before { background: var(--crimson-light); }
+    .courses-bring-text h2 { color: var(--white); margin-bottom: 18px; }
+    .courses-bring-text p {
+      color: rgba(255,255,255,0.6); font-size: 15.5px;
+      line-height: 1.75; margin-bottom: 14px;
+    }
+
+    .bring-list {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .bring-item {
+      display: flex; align-items: center; gap: 14px;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 10px; padding: 16px 20px;
+    }
+    .bring-emoji { font-size: 22px; flex-shrink: 0; }
+    .bring-item-text strong {
+      display: block; font-size: 14px; font-weight: 600;
+      color: var(--white); margin-bottom: 2px;
+    }
+    .bring-item-text span {
+      font-size: 13px; color: rgba(255,255,255,0.5);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .courses-intro-inner,
+      .courses-bring-inner { grid-template-columns: 1fr; gap: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="images/OSALogoRev.png" alt="OS Archers logo"
+         style="mix-blend-mode:screen;"
+         onerror="this.style.display='none';document.getElementById('logo-text').style.display='flex';">
+    <div id="logo-text" class="nav-logo-text" style="display:none;">
+      <strong>OS Archers</strong>
+      <span>Nursling · Southampton</span>
+    </div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="about.html">About</a></li>
+    <li><a href="index.html#disciplines">Disciplines</a></li>
+    <li><a href="index.html#programmes">Programmes</a></li>
+    <li><a href="index.html#records">Records</a></li>
+    <li><a href="index.html#news">News</a></li>
+    <li><a href="index.html#find-us">Find Us</a></li>
+    <li><a href="courses.html" class="nav-cta" style="background:var(--crimson-dark)!important;">Join Us</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ─── PAGE HERO ─── -->
+<section class="page-hero">
+  <div class="page-hero-placeholder"></div>
+  <div class="page-hero-inner">
+    <div class="page-hero-eyebrow">Get Started</div>
+    <h1>Beginners <em>Course</em></h1>
+    <p>A structured two-morning introduction to archery, led by our qualified AGB coaches. All equipment provided — all you need is enthusiasm.</p>
+  </div>
+</section>
+
+<!-- ─── INTRO ─── -->
+<section class="courses-intro">
+  <div class="courses-intro-inner">
+    <div class="courses-intro-text">
+      <div class="section-label">About the Course</div>
+      <h2>Everything You Need to <em>Get Started</em></h2>
+      <p>Our beginners course is the ideal way to take up archery safely and confidently. Delivered across two weekend mornings, it covers everything from handling a bow for the first time through to shooting independently on the range.</p>
+      <p>On completion you will be able to take up archery at <strong>any Archery GB registered club</strong> in the country — and of course we'd love you to join us at OS Archers.</p>
+      <p>Courses are led by our <strong>qualified Level 1/Level 2 AGB coaches</strong> in a friendly, supportive environment. Numbers are kept small so everyone gets plenty of individual attention.</p>
+    </div>
+    <div class="courses-quick-facts">
+      <h3>Course at a Glance</h3>
+      <div class="fact-item">
+        <div class="fact-icon">📅</div>
+        <div class="fact-text">
+          <strong>Duration</strong>
+          <span>Two mornings, typically a week apart. 9:30am – approx. 12:30pm each day.</span>
+        </div>
+      </div>
+      <div class="fact-item">
+        <div class="fact-icon">🏹</div>
+        <div class="fact-text">
+          <strong>Equipment</strong>
+          <span>All equipment is provided — bow, arrows, finger tab, bracer, stand, and more.</span>
+        </div>
+      </div>
+      <div class="fact-item">
+        <div class="fact-icon">📍</div>
+        <div class="fact-text">
+          <strong>Location</strong>
+          <span>OS Archers ground, Nursling, Southampton.</span>
+        </div>
+      </div>
+      <div class="fact-item">
+        <div class="fact-icon">🎓</div>
+        <div class="fact-text">
+          <strong>Qualification</strong>
+          <span>AGB recognised — on completion you can join any AGB affiliated club.</span>
+        </div>
+      </div>
+      <div class="fact-item">
+        <div class="fact-icon">✉️</div>
+        <div class="fact-text">
+          <strong>Booking</strong>
+          <span>Email the secretary using the booking button on each course date below.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── WHAT TO EXPECT ─── -->
+<section class="courses-expect">
+  <div class="courses-expect-header">
+    <div class="section-label">On the Day</div>
+    <h2>What to Expect</h2>
+    <p>Here's what happens during your two mornings with us.</p>
+  </div>
+  <div class="expect-grid">
+    <div class="expect-card">
+      <div class="expect-num">01</div>
+      <h3>Equipment</h3>
+      <p>All equipment you need will be provided and set up ready for your arrival. Bow, arrows, finger tab, bracer, stand — everything is included. You'll learn what it all is and how to use it safely during the course.</p>
+    </div>
+    <div class="expect-card">
+      <div class="expect-num">02</div>
+      <h3>The Range</h3>
+      <p>The range is prepared and ready to go before you arrive. You'll have a target, normally shared with another course participant, and a 9:30am prompt start once everyone has arrived.</p>
+    </div>
+    <div class="expect-card">
+      <div class="expect-num">03</div>
+      <h3>Safety First</h3>
+      <p>Safety is covered thoroughly on day one. Our coaches will walk you through range commands, safe arrow handling, and the rules of the shooting line before anyone picks up a bow.</p>
+    </div>
+    <div class="expect-card">
+      <div class="expect-num">04</div>
+      <h3>Shooting</h3>
+      <p>By the end of day one you'll be shooting arrows downrange. Day two builds on technique, range etiquette, and prepares you for joining a club and shooting independently.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── COURSE DATES ─── -->
+<section class="courses-dates" id="dates">
+  <div class="courses-dates-header">
+    <div class="section-label">2026 Schedule</div>
+    <h2>Upcoming Course Dates</h2>
+    <p>Three scheduled courses run throughout the year. Click the booking button on any available course to register your interest by email.</p>
+  </div>
+
+  <div class="dates-grid">
+
+    <!-- Course 1 -->
+    <div class="date-card available">
+      <div class="date-card-header">
+        <h3>Course 1</h3>
+        <span class="date-ref">Ref: BG12026</span>
+      </div>
+      <div class="date-card-body">
+        <div class="date-status-available">Places Available</div>
+        <div class="date-sessions">16th May &amp; 23rd May 2026</div>
+        <div class="date-detail">
+          Day 1 — 16th May 2026, 9:30am until approx. 12:30pm<br>
+          Day 2 — 23rd May 2026, 9:30am until approx. 12:30pm
+        </div>
+      </div>
+      <div class="date-card-footer">
+        <a href="mailto:secretary@osarchers.co.uk?subject=Beginners Course BG12026&body=Please send me details of the beginners course ref BG12026" class="btn-book">
+          Book Course 1 →
+        </a>
+      </div>
+    </div>
+
+    <!-- Course 2 -->
+    <div class="date-card available">
+      <div class="date-card-header">
+        <h3>Course 2</h3>
+        <span class="date-ref">Ref: BG22026</span>
+      </div>
+      <div class="date-card-body">
+        <div class="date-status-available">Places Available</div>
+        <div class="date-sessions">1st Aug &amp; 8th Aug 2026</div>
+        <div class="date-detail">
+          Day 1 — 1st August 2026, 9:30am until approx. 12:30pm<br>
+          Day 2 — 8th August 2026, 9:30am until approx. 12:30pm
+        </div>
+      </div>
+      <div class="date-card-footer">
+        <a href="mailto:secretary@osarchers.co.uk?subject=Beginners Course BG22026&body=Please send me details of the beginners course ref BG22026" class="btn-book">
+          Book Course 2 →
+        </a>
+      </div>
+    </div>
+
+    <!-- Course 3 -->
+    <div class="date-card available">
+      <div class="date-card-header">
+        <h3>Course 3</h3>
+        <span class="date-ref">Ref: BG32026</span>
+      </div>
+      <div class="date-card-body">
+        <div class="date-status-available">Places Available</div>
+        <div class="date-sessions">10th Oct &amp; 17th Oct 2026</div>
+        <div class="date-detail">
+          Day 1 — 10th October 2026, 9:30am until approx. 12:30pm<br>
+          Day 2 — 17th October 2026, 9:30am until approx. 12:30pm
+        </div>
+      </div>
+      <div class="date-card-footer">
+        <a href="mailto:secretary@osarchers.co.uk?subject=Beginners Course BG32026&body=Please send me details of the beginners course ref BG32026" class="btn-book">
+          Book Course 3 →
+        </a>
+      </div>
+    </div>
+
+    <!-- Course 4 Adhoc -->
+    <div class="date-card adhoc">
+      <div class="date-card-header">
+        <h3>Ad-hoc Course</h3>
+        <span class="date-ref">Ref: BG42026</span>
+      </div>
+      <div class="date-card-body">
+        <div class="date-status-adhoc">Date to be Confirmed</div>
+        <div class="date-sessions">No date set yet</div>
+        <div class="date-detail">
+          No course is currently scheduled. An ad-hoc course may be available — get in touch and we'll let you know if one becomes available.
+        </div>
+      </div>
+      <div class="date-card-footer">
+        <a href="mailto:secretary@osarchers.co.uk?subject=Beginners Course Ad-Hoc&body=Please send me details of the beginners course ref BG42026" class="btn-book-outline">
+          Register Interest →
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── WHAT TO BRING ─── -->
+<section class="courses-bring">
+  <div class="courses-bring-inner">
+    <div class="courses-bring-text">
+      <div class="section-label">Be Prepared</div>
+      <h2>What to <em>Bring</em></h2>
+      <p>We provide everything archery-related — all you need to bring is yourself and a few creature comforts for a morning outdoors.</p>
+      <p>Courses run outdoors on our Nursling ground, so dress appropriately for the weather. Closed-toe shoes are required on the range.</p>
+    </div>
+    <div class="bring-list">
+      <div class="bring-item">
+        <span class="bring-emoji">☕</span>
+        <div class="bring-item-text">
+          <strong>Refreshments</strong>
+          <span>Drinks and food — the course runs for around three hours so bring a snack and something to drink.</span>
+        </div>
+      </div>
+      <div class="bring-item">
+        <span class="bring-emoji">👟</span>
+        <div class="bring-item-text">
+          <strong>Suitable Footwear</strong>
+          <span>Closed-toe shoes or boots. No sandals or flip flops on the range.</span>
+        </div>
+      </div>
+      <div class="bring-item">
+        <span class="bring-emoji">🧥</span>
+        <div class="bring-item-text">
+          <strong>Appropriate Clothing</strong>
+          <span>Dress for the weather — we shoot outdoors. Avoid loose sleeves which can catch the bowstring.</span>
+        </div>
+      </div>
+      <div class="bring-item">
+        <span class="bring-emoji">😊</span>
+        <div class="bring-item-text">
+          <strong>Enthusiasm</strong>
+          <span>No prior experience needed — just a willingness to give it a go and have fun.</span>
+        </div>
+      </div>
+      <div class="bring-item">
+        <span class="bring-emoji">☀️</span>
+        <div class="bring-item-text">
+          <strong>Nice Weather</strong>
+          <span>If you can manage it — though we shoot rain or shine!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>OS Archers</h3>
+      <p>A family-friendly, Archery GB affiliated archery club based in Nursling, Southampton. Founded April 2019. Open to all ages and abilities.</p>
+      <div class="footer-affil">
+        <span class="affil-badge">AGB</span>
+        <span class="affil-badge">SCAS</span>
+        <span class="affil-badge">HAA</span>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Club</h4>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="index.html#disciplines">Disciplines</a></li>
+        <li><a href="events.html">Club Photos</a></li>
+        <li><a href="clubbowsilf.html">Club Bows</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Schemes</h4>
+      <ul>
+        <li><a href="courses.html">Beginners Course</a></li>
+        <li><a href="https://www.osarchers.co.uk/imperial">Imperial Challenge</a></li>
+        <li><a href="252.html">252 Scheme</a></li>
+        <li><a href="hwto.html">Members Area</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Links</h4>
+      <ul>
+        <li><a href="https://agb.sport80.com/" target="_blank" rel="noopener">Sport 80</a></li>
+        <li><a href="https://archery-records.net/" target="_blank" rel="noopener">Archery Records</a></li>
+        <li><a href="https://www.brightonbowmen.net/tournament-diary/" target="_blank" rel="noopener">Tournament Diary <span style="font-size:10px;color:rgba(255,255,255,0.35);">(Brighton Bowmen)</span></a></li>
+        <li><a href="https://www.facebook.com/OSArchers/" target="_blank" rel="noopener">Facebook</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 OS Archers. All rights reserved.</p>
+    <a href="mailto:secretary@osarchers.co.uk">secretary@osarchers.co.uk</a>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('hamburger').addEventListener('click', function () {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+</script>
+
+</body>
+</html>
