@@ -290,7 +290,7 @@
         .agm-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 18px; margin-bottom: 60px;
+            gap: 18px;
         }
 
         .agm-card {
@@ -329,17 +329,6 @@
             color: var(--crimson); line-height: 1;
             margin-bottom: 6px; display: block;
         }
-
-        .agm-minutes-link {
-            display: inline-flex; align-items: center; gap: 8px;
-            margin-top: 10px;
-            font-size: 13px; font-weight: 500;
-            color: var(--navy); text-decoration: none;
-            border-bottom: 1px solid var(--navy-light);
-            padding-bottom: 1px;
-            transition: color 0.2s, border-color 0.2s;
-        }
-        .agm-minutes-link:hover { color: var(--crimson); border-color: var(--crimson); }
 
         /* ─── OBJECTIVES ─── */
         .about-objectives {
@@ -471,7 +460,7 @@
         </div>
         <div>
             <div class="about-intro-image" style="margin-bottom:18px;">
-                <img src="/images/Halloween2025.jpg" alt="OS Archers members on the shooting line"
+                <img src="/images/about-club.jpg" alt="OS Archers members on the shooting line"
                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                 <div class="img-placeholder" style="display:none;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
@@ -494,7 +483,7 @@
                     <div class="stat-label">Ages &amp; Abilities</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-num">L1/L2</div>
+                    <div class="stat-num">L2</div>
                     <div class="stat-label">Qualified Coaches</div>
                 </div>
             </div>
@@ -506,7 +495,7 @@
 <section class="about-mission">
     <div class="about-mission-inner">
         <div class="about-mission-image">
-            <img src="/images/about-club.jpg" alt="Archer on the line"
+            <img src="/images/Halloween2025.jpg" alt="Archer on the line"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
             <div class="img-placeholder" style="display:none;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg">
@@ -601,27 +590,34 @@
         <p class="affiliations-intro">OS Archers is affiliated with the national and regional governing bodies for archery in the UK. Membership of OS Archers includes membership fees for these organisations.</p>
 
         <div class="affil-cards">
-            <a href="https://archerygb.org/get-involved/become-a-member" target="_blank" rel="noopener" class="affil-card">
+            <a href="https://archerygb.org/" target="_blank" rel="noopener" class="affil-card">
                 <span class="affil-badge-large">AGB</span>
                 <h3>Archery GB</h3>
                 <p>The national governing body for archery in the UK, responsible for setting the rules, standards, and coaching qualifications.</p>
-                <span class="affil-card-link">View AGB membership fees →</span>
+                <span class="affil-card-link">Visit Archery GB →</span>
             </a>
-            <a href="https://scasarchery.org.uk/council-details/fees-grants-and-finance" target="_blank" rel="noopener" class="affil-card">
+            <a href="https://scasarchery.org.uk/" target="_blank" rel="noopener" class="affil-card">
                 <span class="affil-badge-large">SCAS</span>
                 <h3>Southern Counties Archery Society</h3>
                 <p>The regional association for archery clubs across the South of England, coordinating competitions and county events.</p>
-                <span class="affil-card-link">View SCAS fees →</span>
+                <span class="affil-card-link">Visit SCAS →</span>
             </a>
-            <a href="https://haa.org.uk/information/fees" target="_blank" rel="noopener" class="affil-card">
+            <a href="https://haa.org.uk/" target="_blank" rel="noopener" class="affil-card">
                 <span class="affil-badge-large">HAA</span>
                 <h3>Hampshire Archery Association</h3>
                 <p>The county association for Hampshire archery clubs, organising local shoots and providing county-level support.</p>
-                <span class="affil-card-link">View HAA fees →</span>
+                <span class="affil-card-link">Visit HAA →</span>
+            </a>
+            <a href="https://www.worldarchery.sport/" target="_blank" rel="noopener" class="affil-card">
+                <span class="affil-badge-large">WA</span>
+                <h3>World Archery</h3>
+                <p>The international governing body for archery, responsible for Olympic archery, world championships, and the global rules of the sport.</p>
+                <span class="affil-card-link">Visit World Archery →</span>
             </a>
         </div>
     </div>
 </section>
+
 
 <!-- ─── AGM SUMMARY ─── -->
 <section class="about-agm" id="agm">
@@ -662,10 +658,6 @@
                 <p>The club recorded a small negative profit this year, attributable to planned investments: new beginner equipment, target maintenance, a new metal detector, and Imperial Challenge medals and badges. Net assets stand at £4,010.95.</p>
             </div>
         </div>
-
-        <p style="font-size:14px; color:var(--text-muted);">
-            Full minutes of the 8th AGM are available to members on request. &nbsp;
-        </p>
     </div>
 </section>
 
@@ -744,6 +736,10 @@
         <div class="footer-col">
             <h4>Links</h4>
             <ul>
+                <li><a href="https://archerygb.org/" target="_blank" rel="noopener">Archery GB</a></li>
+                <li><a href="https://scasarchery.org.uk/" target="_blank" rel="noopener">SCAS</a></li>
+                <li><a href="https://haa.org.uk/" target="_blank" rel="noopener">Hampshire Archery</a></li>
+                <li><a href="https://www.worldarchery.sport/" target="_blank" rel="noopener">World Archery</a></li>
                 <li><a href="https://agb.sport80.com/" target="_blank" rel="noopener">Sport 80</a></li>
                 <li><a href="https://archery-records.net/" target="_blank" rel="noopener">Archery Records</a></li>
                 <li><a href="https://www.brightonbowmen.net/tournament-diary/" target="_blank" rel="noopener">Tournament Diary <span style="font-size:10px;color:rgba(255,255,255,0.35);">(Brighton Bowmen)</span></a></li>
