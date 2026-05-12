@@ -7,6 +7,44 @@
 
   <title>Imperial Rounds - Archery Reference</title>
   <link rel="stylesheet" href="css/imperial-challenge.css">
+  <style>
+    .tier-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 32px 0 10px 0;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+    .tier-heading.gold {
+      background: linear-gradient(90deg, #b8860b22 0%, transparent 100%);
+      border-left: 4px solid #b8860b;
+      color: #7a5c00;
+    }
+    .tier-heading.silver {
+      background: linear-gradient(90deg, #80808022 0%, transparent 100%);
+      border-left: 4px solid #808080;
+      color: #444444;
+    }
+    .tier-heading.bronze {
+      background: linear-gradient(90deg, #8b451322 0%, transparent 100%);
+      border-left: 4px solid #8b4513;
+      color: #6b3410;
+    }
+    .tier-heading .tier-badge {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .tier-heading.gold .tier-badge  { background: #b8860b; }
+    .tier-heading.silver .tier-badge { background: #808080; }
+    .tier-heading.bronze .tier-badge { background: #8b4513; }
+  </style>
 </head>
 <body>
 <header class="header">
@@ -28,25 +66,32 @@
 <div class="container">
   <div class="content-section">
     <h2 style="border-bottom: none; text-align: center; margin-bottom: 30px;">Imperial Archery Rounds Reference</h2>
+
     <div class="legend">
       <h3>Imperial Challenge Rounds</h3>
       <div class="legend-items">
         <div class="legend-item">
           <div class="legend-box gold"></div>
-          <strong>Gold Tier:</strong> Warwick 50, National 50, Western, Windsor, Albion, York/Hereford
+          <strong>Gold Tier:</strong> York/Hereford, Albion, Windsor, Western, National 50, Warwick 50
         </div>
         <div class="legend-item">
           <div class="legend-box silver"></div>
-          <strong>Silver Tier:</strong> Warwick 40, National 40, American, Western 50, Windsor, Bristol 2
+          <strong>Silver Tier:</strong> Bristol 2, Windsor, Western 50, American, National 40, Warwick 40
         </div>
         <div class="legend-item">
           <div class="legend-box bronze"></div>
-          <strong>Bronze Tier:</strong> Warwick 30, National 30, St Nicholas, Western 40, Windsor 50, Bristol 3
+          <strong>Bronze Tier:</strong> Bristol 3, Windsor 50, Western 40, St Nicholas, National 30, Warwick 30
         </div>
       </div>
     </div>
 
     <div class="table-wrapper">
+
+      <!-- GOLD TIER -->
+      <div class="tier-heading gold">
+        <span class="tier-badge"></span>
+        Gold Tier
+      </div>
       <table>
         <thead>
         <tr>
@@ -90,32 +135,6 @@
           <td>12</td>
           <td>1296</td>
         </tr>
-        <tr class="silver-tier">
-          <td>Bristol 2</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>6</td>
-          <td>4</td>
-          <td>2</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>12</td>
-          <td>1296</td>
-        </tr>
-        <tr class="bronze-tier">
-          <td>Bristol 3</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>6</td>
-          <td>4</td>
-          <td>2</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>12</td>
-          <td>1296</td>
-        </tr>
         <tr class="gold-tier">
           <td>Albion</td>
           <td class="empty-cell">-</td>
@@ -142,19 +161,6 @@
           <td>9</td>
           <td>972</td>
         </tr>
-        <tr class="bronze-tier">
-          <td>Windsor 50</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>3</td>
-          <td>3</td>
-          <td>3</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>9</td>
-          <td>972</td>
-        </tr>
         <tr class="gold-tier">
           <td>Western</td>
           <td class="empty-cell">-</td>
@@ -168,6 +174,83 @@
           <td>8</td>
           <td>864</td>
         </tr>
+        <tr class="gold-tier">
+          <td>National 50</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>4</td>
+          <td>2</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>6</td>
+          <td>648</td>
+        </tr>
+        <tr class="gold-tier">
+          <td>Warwick 50</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>2</td>
+          <td>2</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>4</td>
+          <td>432</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <!-- SILVER TIER -->
+      <div class="tier-heading silver">
+        <span class="tier-badge"></span>
+        Silver Tier
+      </div>
+      <table>
+        <thead>
+        <tr>
+          <th>Round</th>
+          <th>100yds</th>
+          <th>80yds</th>
+          <th>60yds</th>
+          <th>50yds</th>
+          <th>40yds</th>
+          <th>30yds</th>
+          <th>20yds</th>
+          <th>10yds</th>
+          <th>Dozen<br>Arrows</th>
+          <th>Maximum<br>Score</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="silver-tier">
+          <td>Bristol 2</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>6</td>
+          <td>4</td>
+          <td>2</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>12</td>
+          <td>1296</td>
+        </tr>
+        <tr class="silver-tier">
+          <td>Windsor</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>3</td>
+          <td>3</td>
+          <td>3</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>9</td>
+          <td>972</td>
+        </tr>
         <tr class="silver-tier">
           <td>Western 50</td>
           <td class="empty-cell">-</td>
@@ -176,19 +259,6 @@
           <td>4</td>
           <td>4</td>
           <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>8</td>
-          <td>864</td>
-        </tr>
-        <tr class="bronze-tier">
-          <td>Western 40</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>4</td>
-          <td>4</td>
           <td class="empty-cell">-</td>
           <td class="empty-cell">-</td>
           <td>8</td>
@@ -207,32 +277,6 @@
           <td>7.5</td>
           <td>810</td>
         </tr>
-        <tr class="bronze-tier">
-          <td>St Nicholas</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>4</td>
-          <td>3</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>7</td>
-          <td>756</td>
-        </tr>
-        <tr class="gold-tier">
-          <td>National 50</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>4</td>
-          <td>2</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>6</td>
-          <td>648</td>
-        </tr>
         <tr class="silver-tier">
           <td>National 40</td>
           <td class="empty-cell">-</td>
@@ -246,33 +290,6 @@
           <td>6</td>
           <td>648</td>
         </tr>
-        <tr class="bronze-tier">
-          <td>National 30</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>4</td>
-          <td>2</td>
-          <td class="empty-cell">-</td>
-          <td>6</td>
-          <td>648</td>
-        </tr>
-
-        <tr class="gold-tier">
-          <td>Warwick 50</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>2</td>
-          <td>2</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td class="empty-cell">-</td>
-          <td>4</td>
-          <td>432</td>
-        </tr>
         <tr class="silver-tier">
           <td>Warwick 40</td>
           <td class="empty-cell">-</td>
@@ -285,6 +302,96 @@
           <td class="empty-cell">-</td>
           <td>4</td>
           <td>432</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <!-- BRONZE TIER -->
+      <div class="tier-heading bronze">
+        <span class="tier-badge"></span>
+        Bronze Tier
+      </div>
+      <table>
+        <thead>
+        <tr>
+          <th>Round</th>
+          <th>100yds</th>
+          <th>80yds</th>
+          <th>60yds</th>
+          <th>50yds</th>
+          <th>40yds</th>
+          <th>30yds</th>
+          <th>20yds</th>
+          <th>10yds</th>
+          <th>Dozen<br>Arrows</th>
+          <th>Maximum<br>Score</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="bronze-tier">
+          <td>Bristol 3</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>6</td>
+          <td>4</td>
+          <td>2</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>12</td>
+          <td>1296</td>
+        </tr>
+        <tr class="bronze-tier">
+          <td>Windsor 50</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>3</td>
+          <td>3</td>
+          <td>3</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>9</td>
+          <td>972</td>
+        </tr>
+        <tr class="bronze-tier">
+          <td>Western 40</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>4</td>
+          <td>4</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>8</td>
+          <td>864</td>
+        </tr>
+        <tr class="bronze-tier">
+          <td>St Nicholas</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>4</td>
+          <td>3</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>7</td>
+          <td>756</td>
+        </tr>
+        <tr class="bronze-tier">
+          <td>National 30</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td class="empty-cell">-</td>
+          <td>4</td>
+          <td>2</td>
+          <td class="empty-cell">-</td>
+          <td>6</td>
+          <td>648</td>
         </tr>
         <tr class="bronze-tier">
           <td>Warwick 30</td>
@@ -301,6 +408,7 @@
         </tr>
         </tbody>
       </table>
+
     </div>
   </div>
 </div>
