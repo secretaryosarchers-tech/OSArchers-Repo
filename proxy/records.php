@@ -27,7 +27,7 @@ if (in_array($origin, $allowed_origins)) {
 header('Content-Type: application/xml; charset=utf-8');
 header('Cache-Control: public, max-age=300'); // Cache for 5 minutes
 
-$feed_url = 'https://archery-records.net/feeds/xml?method=clubrecords&uid=5ed53ca6-3c7f-43cc-962a-6b6e439f3ee8';
+$feed_url = 'https://archery-records.net/feeds/xml?method=clubrecords&uid=331b3400-d495-406c-a7a2-f3040913dcef';
 
 $context = stream_context_create([
     'http' => [
