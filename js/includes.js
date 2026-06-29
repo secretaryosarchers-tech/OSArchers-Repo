@@ -51,6 +51,18 @@
                 navLinks.classList.toggle('open');
             });
         }
+
+        // Mobile: tap "Photos ▾" to toggle submenu
+        var dropdownToggle = document.querySelector('.nav-dropdown-toggle');
+        var dropdown = document.querySelector('.nav-dropdown');
+        if (dropdownToggle && dropdown) {
+            dropdownToggle.addEventListener('click', function (e) {
+                if (window.innerWidth <= 920) {
+                    e.preventDefault();
+                    dropdown.classList.toggle('open');
+                }
+            });
+        }
     }
 
     // Load header first, then footer
