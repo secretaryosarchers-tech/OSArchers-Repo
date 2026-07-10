@@ -57,6 +57,40 @@
       color: #999;
       margin-top: 5px;
     }
+    tr.eligible-row {
+      background: #d4edda;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.8em;
+      font-weight: 600;
+    }
+    .status-badge.eligible {
+      background: #28a745;
+      color: white;
+    }
+    .status-badge.unpaid {
+      background: #e0e0e0;
+      color: #555;
+    }
+    .paid-toggle-btn {
+      padding: 5px 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 0.8em;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .paid-toggle-btn.mark-paid {
+      background: #28a745;
+      color: white;
+    }
+    .paid-toggle-btn.mark-unpaid {
+      background: #dc3545;
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -72,14 +106,15 @@
 <div class="container">
   <div class="hero">
     <h1>Admin Dashboard</h1>
-    <p style="color: #666; margin-top: 10px;">Password Protected</p>
+    <p style="color: #666; margin-top: 10px;">Sign in required</p>
   </div>
 
   <!-- Login -->
   <div id="loginSection" class="content-section">
     <h2>Admin Login</h2>
     <div style="max-width: 400px; margin: 30px auto;">
-      <input type="password" id="adminPassword" placeholder="Enter password" style="width: 100%; padding: 15px; font-size: 16px; border: 2px solid #e0e0e0; border-radius: 5px; margin-bottom: 20px;">
+      <input type="email" id="adminEmail" placeholder="Email" autocomplete="username" style="width: 100%; padding: 15px; font-size: 16px; border: 2px solid #e0e0e0; border-radius: 5px; margin-bottom: 15px;">
+      <input type="password" id="adminPassword" placeholder="Password" autocomplete="current-password" style="width: 100%; padding: 15px; font-size: 16px; border: 2px solid #e0e0e0; border-radius: 5px; margin-bottom: 20px;">
       <button id="loginBtn" class="cta-button" style="width: 100%;">Login</button>
       <div id="loginMessage" style="margin-top: 15px; padding: 10px; border-radius: 5px; display: none;"></div>
     </div>
@@ -87,6 +122,10 @@
 
   <!-- Admin Content -->
   <div id="adminContent" style="display: none;">
+    <div style="text-align: right; margin-bottom: 10px;">
+      <span id="loggedInEmail" style="color: #666; font-size: 0.9em; margin-right: 15px;"></span>
+      <button id="signOutBtn" class="cta-button" style="width: auto; padding: 8px 20px;">Sign Out</button>
+    </div>
     <!-- Stats -->
     <div class="content-section">
       <h2>Statistics</h2>
@@ -94,6 +133,10 @@
         <div style="background: #d4edda; padding: 20px; border-radius: 10px; text-align: center;">
           <div style="font-size: 14px; color: #666;">Registrations</div>
           <div style="font-size: 36px; font-weight: bold; color: #28a745;" id="totalRegs">0</div>
+        </div>
+        <div style="background: #d4edda; padding: 20px; border-radius: 10px; text-align: center;">
+          <div style="font-size: 14px; color: #666;">Eligible for Awards</div>
+          <div style="font-size: 36px; font-weight: bold; color: #28a745;" id="eligibleCount">0</div>
         </div>
         <div style="background: #e7f3ff; padding: 20px; border-radius: 10px; text-align: center;">
           <div style="font-size: 14px; color: #666;">Total Scores</div>
@@ -127,10 +170,12 @@
             <th style="padding: 12px; text-align: left;">AGB</th>
             <th style="padding: 12px; text-align: left;">Club</th>
             <th style="padding: 12px; text-align: left;">Date</th>
+            <th style="padding: 12px; text-align: left;">Status</th>
+            <th style="padding: 12px; text-align: left;">Action</th>
           </tr>
           </thead>
           <tbody id="regsBody">
-          <tr><td colspan="5" style="padding: 40px; text-align: center;">Loading...</td></tr>
+          <tr><td colspan="7" style="padding: 40px; text-align: center;">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -168,7 +213,8 @@
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-  import { getFirestore, collection, getDocs, orderBy, query } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+  import { getFirestore, collection, getDocs, orderBy, query, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
   const firebaseConfig = {
     apiKey: "AIzaSyBiXcIHedwHbD7SVpTedQPH9UxJaVSD9Jo",
@@ -182,10 +228,23 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const ADMIN_PASSWORD = "imperial2026";
+  const auth = getAuth(app);
 
   let registrations = [];
   let scores = [];
+
+  // OSA members get free entry and are automatically eligible for awards;
+  // everyone else needs their payment marked manually.
+  function isOsaClub(club) {
+    if (!club) return false;
+    const normalized = club.toLowerCase().replace(/[^a-z]/g, '');
+    return normalized === 'os' || normalized === 'osa' ||
+      normalized.startsWith('osarchers') || normalized.includes('ordnancesurvey');
+  }
+
+  function isEligible(r) {
+    return r.paid === true || isOsaClub(r.clubName);
+  }
 
   function formatDate(ts) {
     if (!ts) return 'N/A';
@@ -223,6 +282,7 @@
 
   function updateStats() {
     document.getElementById('totalRegs').textContent = registrations.length;
+    document.getElementById('eligibleCount').textContent = registrations.filter(isEligible).length;
     document.getElementById('totalScores').textContent = scores.length;
     document.getElementById('goldCount').textContent = scores.filter(s => s.tier === 'Gold').length;
     document.getElementById('silverCount').textContent = scores.filter(s => s.tier === 'Silver').length;
@@ -232,18 +292,48 @@
   function displayRegs() {
     const tbody = document.getElementById('regsBody');
     if (registrations.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="5" style="padding: 40px; text-align: center;">No registrations</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="padding: 40px; text-align: center;">No registrations</td></tr>';
       return;
     }
-    tbody.innerHTML = registrations.map(r => `
-      <tr style="border-bottom: 1px solid #e0e0e0;">
+    tbody.innerHTML = registrations.map(r => {
+      const osa = isOsaClub(r.clubName);
+      const eligible = isEligible(r);
+      return `
+      <tr style="border-bottom: 1px solid #e0e0e0;" class="${eligible ? 'eligible-row' : ''}">
         <td style="padding: 12px;">${r.firstName} ${r.lastName}</td>
         <td style="padding: 12px;">${r.email}</td>
         <td style="padding: 12px;">${r.agbNumber}</td>
         <td style="padding: 12px;">${r.clubName}</td>
         <td style="padding: 12px;">${formatDate(r.createdAt)}</td>
+        <td style="padding: 12px;">
+          <span class="status-badge ${eligible ? 'eligible' : 'unpaid'}">${eligible ? 'Eligible' : 'Unpaid'}</span>
+        </td>
+        <td style="padding: 12px;">
+          ${osa
+            ? '<span style="font-size: 0.8em; color: #666;">Free (OSA)</span>'
+            : `<button class="paid-toggle-btn ${r.paid ? 'mark-unpaid' : 'mark-paid'}" data-id="${r.id}" data-paid="${!!r.paid}">${r.paid ? 'Mark Unpaid' : 'Mark Paid'}</button>`
+          }
+        </td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
+
+    tbody.querySelectorAll('.paid-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => togglePaid(btn.dataset.id, btn.dataset.paid === 'true'));
+    });
+  }
+
+  async function togglePaid(id, currentlyPaid) {
+    try {
+      await updateDoc(doc(db, 'imperialChallengeEntries', id), { paid: !currentlyPaid });
+      const reg = registrations.find(r => r.id === id);
+      if (reg) reg.paid = !currentlyPaid;
+      updateStats();
+      displayRegs();
+    } catch (e) {
+      console.error('Update error:', e);
+      alert('Error updating paid status: ' + e.message);
+    }
   }
 
   function displayScores() {
@@ -287,15 +377,27 @@
     a.click();
   }
 
-  function login() {
+  function friendlyAuthError(code) {
+    const map = {
+      'auth/invalid-email': 'Please enter a valid email address.',
+      'auth/user-not-found': 'No account found with that email.',
+      'auth/wrong-password': 'Incorrect password.',
+      'auth/invalid-credential': 'Invalid email or password.',
+      'auth/too-many-requests': 'Too many attempts. Please try again later.',
+      'auth/network-request-failed': 'Network error. Check your connection.'
+    };
+    return map[code] || 'Sign-in failed. Please try again.';
+  }
+
+  async function login() {
+    const email = document.getElementById('adminEmail').value.trim();
     const pwd = document.getElementById('adminPassword').value;
     const msg = document.getElementById('loginMessage');
-    if (pwd === ADMIN_PASSWORD) {
-      document.getElementById('loginSection').style.display = 'none';
-      document.getElementById('adminContent').style.display = 'block';
-      loadData();
-    } else {
-      msg.textContent = 'Incorrect password';
+    msg.style.display = 'none';
+    try {
+      await signInWithEmailAndPassword(auth, email, pwd);
+    } catch (e) {
+      msg.textContent = friendlyAuthError(e.code);
       msg.style.display = 'block';
       msg.style.background = '#f8d7da';
       msg.style.color = '#721c24';
@@ -303,10 +405,23 @@
     }
   }
 
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      document.getElementById('loginSection').style.display = 'none';
+      document.getElementById('adminContent').style.display = 'block';
+      document.getElementById('loggedInEmail').textContent = user.email;
+      loadData();
+    } else {
+      document.getElementById('loginSection').style.display = 'block';
+      document.getElementById('adminContent').style.display = 'none';
+    }
+  });
+
   document.getElementById('loginBtn').addEventListener('click', login);
   document.getElementById('adminPassword').addEventListener('keypress', e => {
     if (e.key === 'Enter') login();
   });
+  document.getElementById('signOutBtn').addEventListener('click', () => signOut(auth));
   document.getElementById('exportRegsBtn').addEventListener('click', exportRegs);
   document.getElementById('exportScoresBtn').addEventListener('click', exportScores);
 </script>
