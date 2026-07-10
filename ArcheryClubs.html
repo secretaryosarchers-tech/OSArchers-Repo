@@ -143,6 +143,30 @@
     .club-list::-webkit-scrollbar { width: 8px; }
     .club-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
 
+    /* ---------- Auto-located clubs (from new registrations) ---------- */
+    .auto-tag {
+      display: inline-block;
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: #8a8f98;
+      background: #eceef1;
+      border-radius: 4px;
+      padding: 1px 5px;
+      margin-left: 4px;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+
+    .popup-auto {
+      margin-top: 0.4rem;
+      font-size: 0.72rem;
+      color: #8a8f98;
+      font-style: italic;
+    }
+
+    .club-item.pending { cursor: default; opacity: 0.55; }
+    .club-item.pending:hover { background: none; }
+
     /* ---------- Marker cluster (numbered badge for co-located clubs) ---------- */
     .cluster-marker {
       display: flex;
@@ -226,7 +250,7 @@
       <h2>Archery Clubs</h2>
       <div class="count"><b id="club-count">0</b> clubs mapped &middot; UK &amp; Channel Islands</div>
     </div>
-    <div class="map-hint">Click a club to centre the map and view its details.</div>
+    <div class="map-hint">Click a club to centre the map and view its details. Clubs tagged <span class="auto-tag">auto</span> were located automatically from new registrations.</div>
     <ul class="club-list" id="club-list"></ul>
   </div>
   <div id="map"></div>
@@ -237,8 +261,24 @@
   <p><a href="https://www.osarchers.co.uk">Visit our main website</a></p>
 </footer>
 
-<script>
-  const clubs = [
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBiXcIHedwHbD7SVpTedQPH9UxJaVSD9Jo",
+    authDomain: "osmembership-bc876.firebaseapp.com",
+    projectId: "osmembership-bc876",
+    storageBucket: "osmembership-bc876.firebasestorage.app",
+    messagingSenderId: "265215395375",
+    appId: "1:265215395375:web:2523ab3fefa6f27fafe8da",
+    measurementId: "G-7Q3KXJ4MYS"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const STATIC_CLUBS = [
     { name: "OS Archers", venue: "Ordnance Survey Archers", address: "Adanac Dr, Nursling, Southampton SO16 0AS", lat: 50.9378972, lng: -1.4692141 },
     { name: "Southampton Archery Club", venue: "Hardmoor Sports Ground", address: "Stoneham Lane, Eastleigh SO50 9HT", lat: 50.9505396, lng: -1.3823891 },
     { name: "Overton Black Arrows", venue: "Overton Black Arrows", address: "Laverstoke, Whitchurch RG28 7NY", lat: 51.2328620, lng: -1.2991839 },
@@ -268,7 +308,32 @@
     { name: "Yeo Bowmen", venue: "Johnson Park (Yeovil Sports & Social Club)", address: "Coronation Avenue, Yeovil, Somerset BA21 3DX", lat: 50.9522634, lng: -2.6486018 }
   ];
 
-  document.getElementById('club-count').textContent = clubs.length;
+  // Known spelling/casing variants seen in registrations, mapped to the
+  // curated (accurately geocoded) club name above — so messy free-text
+  // club names don't spawn duplicate auto-located pins.
+  const CLUB_ALIASES = {
+    'osa': 'OS Archers',
+    'os': 'OS Archers',
+    'o s archers': 'OS Archers',
+    'ordnance survey archers': 'OS Archers',
+    'southend and district archery club': 'Southend District',
+    'southend district': 'Southend District',
+    'clophill archery': 'Clophill Archery Club',
+    'fore of bere bowmen': 'Forest of Bere Bowmen',
+    'forest of bere bowmen': 'Forest of Bere Bowmen',
+    'brent valley archers': 'Brent Valley Archers / Rickmansworth Archery Club',
+    'rickmansworth archery club': 'Brent Valley Archers / Rickmansworth Archery Club',
+    'brent valley archers/rickmansworth archery club': 'Brent Valley Archers / Rickmansworth Archery Club',
+    'yeobowmen': 'Yeo Bowmen',
+    'yeo bowmen': 'Yeo Bowmen',
+    'valley bowmen of huddersfield': 'The Valley Bowmen of Huddersfield',
+    'the valley bowmen of huddersfield': 'The Valley Bowmen of Huddersfield'
+  };
+
+  const clubs = [];
+  const markers = [];
+  const listEl = document.getElementById('club-list');
+  const countEl = document.getElementById('club-count');
 
   const map = L.map('map', { zoomControl: true }).setView([52.6, -1.8], 6);
 
@@ -277,14 +342,15 @@
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
-  function targetIcon(active) {
-    const ring  = active ? '#e91e63' : '#4a5c8c';
+  function targetIcon(active, auto) {
+    const ring  = active ? '#e91e63' : (auto ? '#8a8f98' : '#4a5c8c');
     const dot   = active ? '#ffd700' : '#e91e63';
     const fill  = active ? '#fff'    : '#f8f9fa';
+    const dash  = auto ? ' stroke-dasharray="3,2"' : '';
     return L.divIcon({
       className: 'target-marker',
       html: `<svg width="28" height="28" viewBox="0 0 28 28">
-               <circle cx="14" cy="14" r="12" fill="${fill}" stroke="${ring}" stroke-width="2.5"/>
+               <circle cx="14" cy="14" r="12" fill="${fill}" stroke="${ring}" stroke-width="2.5"${dash}/>
                <circle cx="14" cy="14" r="7.5" fill="none" stroke="${ring}" stroke-width="2"/>
                <circle cx="14" cy="14" r="3" fill="${dot}"/>
              </svg>`,
@@ -293,9 +359,6 @@
       popupAnchor: [0, -12]
     });
   }
-
-  const markers = [];
-  const listEl = document.getElementById('club-list');
 
   // Groups nearby clubs into a single numbered marker; expands on click/zoom.
   const clusterGroup = L.markerClusterGroup({
@@ -313,11 +376,12 @@
     }
   });
 
-  clubs.forEach((club, i) => {
-    const marker = L.marker([club.lat, club.lng], { icon: targetIcon(false) });
+  function addClub(club) {
+    const i = clubs.push(club) - 1;
+    const marker = L.marker([club.lat, club.lng], { icon: targetIcon(false, club.auto) });
     marker.bindPopup(
       `<div class="popup-name">${club.name}</div>
-       <div class="popup-addr">${club.venue}<br>${club.address}</div>`
+       <div class="popup-addr">${club.venue}<br>${club.address}</div>${club.auto ? '<div class="popup-auto">📍 Location approximate — auto-detected from registration</div>' : ''}`
     );
     markers.push(marker);
     clusterGroup.addLayer(marker);
@@ -328,25 +392,40 @@
     li.innerHTML = `
       <span class="club-num">${String(i + 1).padStart(2, '0')}</span>
       <div>
-        <p class="club-name">${club.name}</p>
+        <p class="club-name">${club.name}${club.auto ? ' <span class="auto-tag">auto</span>' : ''}</p>
         <p class="club-addr">${club.address}</p>
       </div>`;
     li.addEventListener('click', () => focusClub(i));
     listEl.appendChild(li);
 
     marker.on('click', () => focusClub(i));
-  });
+    countEl.textContent = clubs.length;
+    return i;
+  }
 
+  function addPendingClub(name) {
+    const li = document.createElement('li');
+    li.className = 'club-item pending';
+    li.innerHTML = `
+      <span class="club-num">–</span>
+      <div>
+        <p class="club-name">${name}</p>
+        <p class="club-addr">Location not yet mapped</p>
+      </div>`;
+    listEl.appendChild(li);
+  }
+
+  STATIC_CLUBS.forEach(addClub);
   map.addLayer(clusterGroup);
 
   let activeIndex = null;
   function focusClub(i) {
     if (activeIndex !== null) {
-      markers[activeIndex].setIcon(targetIcon(false));
+      markers[activeIndex].setIcon(targetIcon(false, clubs[activeIndex].auto));
       document.getElementById('item-' + activeIndex).classList.remove('active');
     }
     activeIndex = i;
-    markers[i].setIcon(targetIcon(true));
+    markers[i].setIcon(targetIcon(true, clubs[i].auto));
     document.getElementById('item-' + i).classList.add('active');
     clusterGroup.zoomToShowLayer(markers[i], () => markers[i].openPopup());
     document.getElementById('item-' + i).scrollIntoView({ block: 'nearest' });
@@ -354,6 +433,90 @@
 
   const group = L.featureGroup(markers);
   map.fitBounds(group.getBounds().pad(0.15));
+
+  function normalize(name) {
+    return name.trim().replace(/\s+/g, ' ').toLowerCase();
+  }
+
+  function resolveKnownClub(rawName) {
+    const key = normalize(rawName);
+    const aliased = CLUB_ALIASES[key];
+    if (aliased) return clubs.find(c => c.name === aliased) || null;
+    return clubs.find(c => normalize(c.name) === key) || null;
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  // Free-text club names don't come with a venue address, so new clubs
+  // are geocoded by name via Nominatim. Results are cached in localStorage
+  // (keyed per browser) so repeat visits don't re-query, and lookups are
+  // spaced out to stay under Nominatim's ~1 request/second usage policy.
+  async function nominatimSearch(q) {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=gb,je,gg,im&q=${encodeURIComponent(q)}`;
+    const response = await fetch(url);
+    const results = await response.json();
+    return results[0] ? { lat: parseFloat(results[0].lat), lng: parseFloat(results[0].lon) } : null;
+  }
+
+  async function geocodeClub(name) {
+    const cacheKey = 'clubGeo:' + normalize(name);
+    const cached = localStorage.getItem(cacheKey);
+    if (cached !== null) return JSON.parse(cached);
+
+    try {
+      // The bare club name matches best when it's already an OSM POI;
+      // only fall back to a qualified query for generic/ambiguous names.
+      let coords = await nominatimSearch(name);
+      if (!coords) {
+        await sleep(1100);
+        coords = await nominatimSearch(name + ' archery club, UK');
+      }
+      localStorage.setItem(cacheKey, JSON.stringify(coords));
+      return coords;
+    } catch (error) {
+      console.error('Geocoding failed for', name, error);
+      return null;
+    }
+  }
+
+  // Reads registrations to find clubs not already on the map. Only the
+  // clubName field is read from each document — no other registrant data
+  // (name, email, address, AGB number) is touched or displayed here.
+  async function discoverClubsFromRegistrations() {
+    try {
+      const snapshot = await getDocs(collection(db, 'imperialChallengeEntries'));
+      const rawNames = new Set();
+      snapshot.forEach(doc => {
+        const name = (doc.data().clubName || '').trim();
+        if (name) rawNames.add(name);
+      });
+
+      for (const rawName of rawNames) {
+        if (resolveKnownClub(rawName)) continue;
+
+        const coords = await geocodeClub(rawName);
+        if (coords) {
+          addClub({
+            name: rawName,
+            venue: rawName,
+            address: 'Location approximate — from club registration',
+            lat: coords.lat,
+            lng: coords.lng,
+            auto: true
+          });
+        } else {
+          addPendingClub(rawName);
+        }
+        await sleep(1100);
+      }
+    } catch (error) {
+      console.error('Error loading clubs from registrations:', error);
+    }
+  }
+
+  discoverClubsFromRegistrations();
 </script>
 
 </body>
