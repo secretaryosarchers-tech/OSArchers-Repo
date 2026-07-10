@@ -6,6 +6,9 @@
   <title>Archery Clubs Map - Imperial Challenge</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
   <link rel="stylesheet" href="./css/imperial-challenge.css">
   <style>
     html, body { height: 100%; }
@@ -140,14 +143,61 @@
     .club-list::-webkit-scrollbar { width: 8px; }
     .club-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
 
+    /* ---------- Marker cluster (numbered badge for co-located clubs) ---------- */
+    .cluster-marker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #4a5c8c;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      color: #fff;
+      font-weight: 700;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+    }
+    .cluster-marker span { color: #ffd700; }
+
     @media (max-width: 768px) {
       .map-sidebar { width: 220px; min-width: 220px; }
+
+      /* Keep header/footer compact so the map has room to breathe */
+      .header {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 8px 12px;
+        gap: 6px 14px;
+      }
+      .header .logo { height: 40px; }
+      .header h1 {
+        order: 3;
+        width: 100%;
+        text-align: center;
+        font-size: 1rem;
+        margin: 0;
+      }
+      .nav-links {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px 12px;
+      }
+      .nav-links a { font-size: 0.78rem; }
+
+      .footer { padding: 8px; margin-top: 0; }
+      .footer p { font-size: 0.72rem; margin: 2px 0; }
     }
 
     @media (max-width: 540px) {
       .map-app { flex-direction: column; }
       .map-sidebar { width: 100%; min-width: 0; height: 220px; }
       #map { min-height: 55vh; }
+
+      /* Even tighter on phones */
+      .header h1 { display: none; }
+      .header .logo { height: 32px; }
+      .nav-links a { font-size: 0.72rem; }
     }
   </style>
 </head>
@@ -208,7 +258,14 @@
     { name: "Towcester Archers", venue: "Towcester Archers", address: "Greens, Norton Road, Towcester NN12 8AW", lat: 52.1415246, lng: -1.0063796 },
     { name: "Bowmen of Lytchett", venue: "The Bowmen Of Lytchett Archery Club", address: "Worgret Rd, Wareham BH20 4PH", lat: 50.6818963, lng: -2.1215863 },
     { name: "Stalybridge Archery Club", venue: "Stalybridge Archery Club", address: "Mottram Rd, Stalybridge SK15 2QS", lat: 53.4779847, lng: -2.0448142 },
-    { name: "Ham and Petersham", venue: "Ham & Petersham Rifle & Pistol Club", address: "The Ranges, Ham St, Richmond TW10 7RT", lat: 51.4431587, lng: -0.3210282 }
+    { name: "Ham and Petersham", venue: "Ham & Petersham Rifle & Pistol Club", address: "The Ranges, Ham St, Richmond TW10 7RT", lat: 51.4431587, lng: -0.3210282 },
+    { name: "Abbeydale Archers", venue: "De La Salle Association", address: "Beauchief Abbey Lane, Sheffield S8 7BA", lat: 53.3289623, lng: -1.5039113 },
+    { name: "Ebor Archers", venue: "York RI Sports Ground", address: "New Lane, Holgate, York", lat: 53.9536612, lng: -1.1106501 },
+    { name: "Phoenix Bowmen", venue: "Old Rishworthians RUFC", address: "Copley, Halifax HX3 0UG", lat: 53.7127937, lng: -1.8875221 },
+    { name: "The Valley Bowmen of Huddersfield", venue: "Knowle Lane Ground", address: "Knowle Lane, Meltham, Huddersfield HD9 4HL", lat: 53.5917295, lng: -1.8370815 },
+    { name: "Nethermoss Archers", venue: "Hurlston Hall", address: "Hurlston Lane, Scarisbrick, Ormskirk L40 8HB", lat: 53.5884225, lng: -2.9039879 },
+    { name: "Bowbearers of Wyresdale", venue: "Wyresdale Park", address: "Snowhill Lane, Scorton, Preston PR3 1BA", lat: 53.9331679, lng: -2.7600726 },
+    { name: "Yeo Bowmen", venue: "Johnson Park (Yeovil Sports & Social Club)", address: "Coronation Avenue, Yeovil, Somerset BA21 3DX", lat: 50.9522634, lng: -2.6486018 }
   ];
 
   document.getElementById('club-count').textContent = clubs.length;
@@ -240,13 +297,30 @@
   const markers = [];
   const listEl = document.getElementById('club-list');
 
+  // Groups nearby clubs into a single numbered marker; expands on click/zoom.
+  const clusterGroup = L.markerClusterGroup({
+    maxClusterRadius: 45,
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    iconCreateFunction(cluster) {
+      const count = cluster.getChildCount();
+      const size = count < 10 ? 34 : 40;
+      return L.divIcon({
+        html: `<div class="cluster-marker" style="width:${size}px;height:${size}px;font-size:${count < 10 ? 13 : 14}px;"><span>${count}</span></div>`,
+        className: '',
+        iconSize: [size, size]
+      });
+    }
+  });
+
   clubs.forEach((club, i) => {
-    const marker = L.marker([club.lat, club.lng], { icon: targetIcon(false) }).addTo(map);
+    const marker = L.marker([club.lat, club.lng], { icon: targetIcon(false) });
     marker.bindPopup(
       `<div class="popup-name">${club.name}</div>
        <div class="popup-addr">${club.venue}<br>${club.address}</div>`
     );
     markers.push(marker);
+    clusterGroup.addLayer(marker);
 
     const li = document.createElement('li');
     li.className = 'club-item';
@@ -263,6 +337,8 @@
     marker.on('click', () => focusClub(i));
   });
 
+  map.addLayer(clusterGroup);
+
   let activeIndex = null;
   function focusClub(i) {
     if (activeIndex !== null) {
@@ -272,8 +348,7 @@
     activeIndex = i;
     markers[i].setIcon(targetIcon(true));
     document.getElementById('item-' + i).classList.add('active');
-    map.flyTo(markers[i].getLatLng(), 12, { duration: 0.6 });
-    markers[i].openPopup();
+    clusterGroup.zoomToShowLayer(markers[i], () => markers[i].openPopup());
     document.getElementById('item-' + i).scrollIntoView({ block: 'nearest' });
   }
 
