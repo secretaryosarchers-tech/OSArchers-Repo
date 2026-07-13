@@ -273,7 +273,48 @@
 <!-- ═══════════════════════════════════════════════
      2026 EVENTS
      ═══════════════════════════════════════════════ -->
+<section class="gallery-section" id="straw2026">
+    <div class="gallery-inner">
+        <div class="event-header">
+            <div class="event-header-text">
+                <div class="section-label">Competition</div>
+                <h2>The Strawberry Shoot 2026</h2>
+                <div class="event-meta">
+                    <div class="event-meta-item"><span>📅</span> July 2026</div>
+                    <div class="event-meta-item"><span>📍</span> Talisman Bowmen</div>
+                </div>
+            </div>
+            <span class="event-count" id="straw2026-count">Loading photos…</span>
+        </div>
 
+        <div class="photo-grid" id="straw2026-grid">
+            <!-- Photos: place files in /images/events/east2026/
+                 Naming convention: straw-01.jpg, straw-02.jpg etc.
+                 Update the JS below with the correct count and any captions. -->
+        </div>
+    </div>
+</section>
+<section class="gallery-section" id="july42026">
+    <div class="gallery-inner">
+        <div class="event-header">
+            <div class="event-header-text">
+                <div class="section-label">Competition</div>
+                <h2>The 4th July Shoot 2026</h2>
+                <div class="event-meta">
+                    <div class="event-meta-item"><span>📅</span> July 4th 2026</div>
+                    <div class="event-meta-item"><span>📍</span> Home Range</div>
+                </div>
+            </div>
+            <span class="event-count" id="july42026-count">Loading photos…</span>
+        </div>
+
+        <div class="photo-grid" id="july42026-grid">
+            <!-- Photos: place files in /images/events/east2026/
+                 Naming convention: east2026-01.jpg, east2026-02.jpg etc.
+                 Update the JS below with the correct count and any captions. -->
+        </div>
+    </div>
+</section>
 <!-- ─── EAST 2026 ─── -->
 <section class="gallery-section" id="east-2026">
     <div class="gallery-inner">
@@ -349,6 +390,28 @@
        ═══════════════════════════════════════════════════ */
 
     var EVENTS = [
+        {
+            gridId:   'straw2026-grid',
+            countId:  'straw2026-count',
+            folder:   '/images/events/Strawberry/',
+            prefix:   'straw-',
+            photos:   2,
+            ext:      'jpg',
+            captions: [
+
+            ]
+        },
+        {
+            gridId:   'july42026-grid',
+            countId:  'july42026-count',
+            folder:   '/images/events/July4/',
+            prefix:   'july4th',
+            photos:   24,
+            ext:      'jpg',
+            captions: [
+
+            ]
+        },
         {
             gridId:   'east2026-grid',
             countId:  'east2026-count',
