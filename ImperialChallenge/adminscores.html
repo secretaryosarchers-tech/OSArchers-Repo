@@ -1,0 +1,1140 @@
+﻿<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Imperial Challenge – Score Admin</title>
+  <style>
+    :root {
+      --green:       #2d6a2d;
+      --green-dark:  #1e4a1e;
+      --green-light: #4a8c4a;
+      --gold:        #c8a84b;
+      --gold-light:  #e0c97a;
+      --cream:       #faf8f2;
+      --white:       #ffffff;
+      --grey-50:     #f8f9fa;
+      --grey-100:    #f0f2f0;
+      --grey-200:    #d8ddd8;
+      --grey-400:    #9aa49a;
+      --grey-700:    #4a564a;
+      --red:         #c0392b;
+      --red-light:   #f9ebea;
+      --blue:        #2471a3;
+      --shadow-sm:   0 1px 3px rgba(0,0,0,.12);
+      --shadow-md:   0 4px 12px rgba(0,0,0,.15);
+      --shadow-lg:   0 8px 32px rgba(0,0,0,.18);
+      --radius:      8px;
+      --font-body:   'Georgia', serif;
+      --font-ui:     'Trebuchet MS', Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-ui);
+      background: var(--grey-100);
+      color: var(--grey-700);
+      min-height: 100vh;
+    }
+
+    /* ── Login Screen ── */
+    #loginScreen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 60%, var(--green-light) 100%);
+    }
+
+    .login-card {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-card .crest {
+      width: 80px;
+      height: 80px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 32px;
+    }
+
+    .login-card h1 {
+      font-family: var(--font-body);
+      font-size: 22px;
+      color: var(--green-dark);
+      margin-bottom: 6px;
+    }
+
+    .login-card .subtitle {
+      font-size: 13px;
+      color: var(--grey-400);
+      margin-bottom: 32px;
+    }
+
+    .login-card .field {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+
+    .login-card label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--grey-700);
+      margin-bottom: 6px;
+    }
+
+    .login-card input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--grey-200);
+      border-radius: var(--radius);
+      font-family: var(--font-ui);
+      font-size: 14px;
+      transition: border-color .2s;
+    }
+
+    .login-card input:focus {
+      outline: none;
+      border-color: var(--green);
+    }
+
+    .login-error {
+      color: var(--red);
+      font-size: 13px;
+      margin-bottom: 12px;
+      min-height: 18px;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background: var(--green);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-ui);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+    }
+
+    .btn-login:hover { background: var(--green-dark); }
+    .btn-login:active { transform: scale(.98); }
+    .btn-login:disabled { background: var(--grey-400); cursor: not-allowed; }
+
+    /* ── App Shell ── */
+    #appScreen { display: none; }
+
+    header {
+      background: var(--green-dark);
+      color: var(--white);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .header-crest {
+      width: 36px;
+      height: 36px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    header h1 {
+      font-family: var(--font-body);
+      font-size: 18px;
+      font-weight: normal;
+    }
+
+    header h1 span {
+      color: var(--gold-light);
+      font-weight: bold;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #userEmail {
+      font-size: 13px;
+      color: rgba(255,255,255,.7);
+    }
+
+    .btn-signout {
+      padding: 6px 14px;
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,.4);
+      border-radius: var(--radius);
+      color: var(--white);
+      font-size: 13px;
+      cursor: pointer;
+      transition: background .2s, border-color .2s;
+    }
+
+    .btn-signout:hover {
+      background: rgba(255,255,255,.1);
+      border-color: rgba(255,255,255,.7);
+    }
+
+    /* ── Main Content ── */
+    .main {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 28px 20px;
+    }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toolbar-group label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--grey-400);
+      white-space: nowrap;
+    }
+
+    .toolbar select,
+    .toolbar input[type="text"] {
+      padding: 7px 12px;
+      border: 1.5px solid var(--grey-200);
+      border-radius: 6px;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      background: var(--white);
+      color: var(--grey-700);
+      transition: border-color .2s;
+    }
+
+    .toolbar select:focus,
+    .toolbar input[type="text"]:focus {
+      outline: none;
+      border-color: var(--green);
+    }
+
+    .toolbar .search-input { width: 200px; }
+
+    .spacer { flex: 1; }
+
+    .btn-refresh {
+      padding: 7px 16px;
+      background: var(--green);
+      color: var(--white);
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-refresh:hover { background: var(--green-dark); }
+
+    /* ── Stats Bar ── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
+      border-left: 4px solid var(--green);
+    }
+
+    .stat-card.gold  { border-left-color: #c8a84b; }
+    .stat-card.silver{ border-left-color: #8a9ba8; }
+    .stat-card.bronze{ border-left-color: #cd7f32; }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--grey-400);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--green-dark);
+      line-height: 1;
+    }
+
+    /* ── Table ── */
+    .table-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--grey-100);
+    }
+
+    .table-title {
+      font-family: var(--font-body);
+      font-size: 16px;
+      color: var(--green-dark);
+    }
+
+    .record-count {
+      font-size: 13px;
+      color: var(--grey-400);
+      background: var(--grey-100);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead th {
+      background: var(--green-dark);
+      color: var(--white);
+      padding: 11px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      transition: background .15s;
+    }
+
+    thead th:hover { background: var(--green); }
+
+    thead th.sorted-asc::after  { content: ' ▲'; font-size: 9px; }
+    thead th.sorted-desc::after { content: ' ▼'; font-size: 9px; }
+
+    tbody tr {
+      border-bottom: 1px solid var(--grey-100);
+      transition: background .12s;
+    }
+
+    tbody tr:hover { background: var(--grey-50); }
+
+    tbody td {
+      padding: 10px 14px;
+      vertical-align: middle;
+    }
+
+    .tier-badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .tier-Gold   { background: #fef9e7; color: #9a7d0a; border: 1px solid #f9e79f; }
+    .tier-Silver { background: #f2f3f4; color: #5d6d7e; border: 1px solid #d5d8dc; }
+    .tier-Bronze { background: #fdf2e9; color: #935116; border: 1px solid #fad7a0; }
+
+    .score-cell {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--green-dark);
+    }
+
+    .timestamp-cell { color: var(--grey-400); font-size: 12px; }
+
+    .action-cell { white-space: nowrap; }
+
+    .btn-edit {
+      padding: 5px 12px;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+    }
+
+    .btn-edit:hover { background: #1a5276; }
+    .btn-edit:active { transform: scale(.96); }
+
+    .loading-row td {
+      text-align: center;
+      padding: 48px;
+      color: var(--grey-400);
+      font-size: 14px;
+    }
+
+    .empty-row td {
+      text-align: center;
+      padding: 48px;
+      color: var(--grey-400);
+      font-size: 14px;
+    }
+
+    /* ── Edit Modal ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 520px;
+      margin: 16px;
+      overflow: hidden;
+      animation: slideUp .2s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+      background: var(--green-dark);
+      color: var(--white);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h2 {
+      font-family: var(--font-body);
+      font-size: 17px;
+      font-weight: normal;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,.7);
+      font-size: 22px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+      transition: color .15s;
+    }
+
+    .modal-close:hover { color: var(--white); }
+
+    .modal-body { padding: 24px; }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .modal-field { display: flex; flex-direction: column; gap: 5px; }
+    .modal-field.full { grid-column: 1 / -1; }
+
+    .modal-field label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--grey-400);
+    }
+
+    .modal-field .read-only {
+      font-size: 14px;
+      color: var(--grey-700);
+      padding: 8px 12px;
+      background: var(--grey-50);
+      border-radius: 6px;
+      border: 1px solid var(--grey-100);
+    }
+
+    .modal-field input,
+    .modal-field select {
+      padding: 9px 12px;
+      border: 1.5px solid var(--grey-200);
+      border-radius: 6px;
+      font-family: var(--font-ui);
+      font-size: 14px;
+      transition: border-color .2s;
+    }
+
+    .modal-field input:focus,
+    .modal-field select:focus {
+      outline: none;
+      border-color: var(--green);
+    }
+
+    .modal-field input.highlight {
+      border-color: var(--gold);
+      background: #fffdf0;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 16px 24px;
+      border-top: 1px solid var(--grey-100);
+      background: var(--grey-50);
+    }
+
+    .btn-cancel {
+      padding: 9px 20px;
+      background: var(--white);
+      border: 1.5px solid var(--grey-200);
+      border-radius: var(--radius);
+      font-family: var(--font-ui);
+      font-size: 14px;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+
+    .btn-cancel:hover { border-color: var(--grey-400); }
+
+    .btn-save {
+      padding: 9px 24px;
+      background: var(--green);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius);
+      font-family: var(--font-ui);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+    }
+
+    .btn-save:hover { background: var(--green-dark); }
+    .btn-save:active { transform: scale(.97); }
+    .btn-save:disabled { background: var(--grey-400); cursor: not-allowed; }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      border-radius: var(--radius);
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: var(--shadow-md);
+      z-index: 999;
+      display: none;
+      animation: fadeIn .2s ease;
+    }
+
+    #toast.success { background: var(--green); }
+    #toast.error   { background: var(--red); }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .modal-grid { grid-template-columns: 1fr; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .toolbar .search-input { width: 100%; }
+      header h1 { font-size: 15px; }
+      #userEmail { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ LOGIN ══════════════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="crest">🏹</div>
+    <h1>Imperial Challenge</h1>
+    <p class="subtitle">Score Administration — sign in to continue</p>
+
+    <div class="field">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" autocomplete="username" placeholder="admin@example.com">
+    </div>
+    <div class="field">
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" autocomplete="current-password" placeholder="••••••••">
+    </div>
+
+    <p class="login-error" id="loginError"></p>
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">Sign In</button>
+  </div>
+</div>
+
+<!-- ══════════════ APP ══════════════ -->
+<div id="appScreen">
+
+  <header>
+    <div class="header-left">
+      <div class="header-crest">🏹</div>
+      <h1>Imperial Challenge &ndash; <span>Score Admin</span></h1>
+    </div>
+    <div class="header-right">
+      <span id="userEmail"></span>
+      <button class="btn-signout" onclick="doSignOut()">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="main">
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-label">Total Scores</div>
+        <div class="stat-value" id="statTotal">–</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-label">Gold Tier</div>
+        <div class="stat-value" id="statGold">–</div>
+      </div>
+      <div class="stat-card silver">
+        <div class="stat-label">Silver Tier</div>
+        <div class="stat-value" id="statSilver">–</div>
+      </div>
+      <div class="stat-card bronze">
+        <div class="stat-label">Bronze Tier</div>
+        <div class="stat-value" id="statBronze">–</div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <label>Search</label>
+        <input type="text" class="search-input" id="searchInput" placeholder="Name, AGB, Club…" oninput="applyFilters()">
+      </div>
+      <div class="toolbar-group">
+        <label>Tier</label>
+        <select id="filterTier" onchange="applyFilters()">
+          <option value="">All</option>
+          <option>Gold</option>
+          <option>Silver</option>
+          <option>Bronze</option>
+        </select>
+      </div>
+      <div class="toolbar-group">
+        <label>Bow</label>
+        <select id="filterBow" onchange="applyFilters()">
+          <option value="">All</option>
+          <option>Recurve</option>
+          <option>Compound</option>
+          <option>Barebow</option>
+          <option>Longbow</option>
+          <option>Traditional</option>
+        </select>
+      </div>
+      <div class="toolbar-group">
+        <label>Category</label>
+        <select id="filterCategory" onchange="applyFilters()">
+          <option value="">All</option>
+          <option>Gent</option>
+          <option>Lady</option>
+          <option>Junior Gent</option>
+          <option>Junior Lady</option>
+        </select>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn-refresh" onclick="loadScores()">⟳ Refresh</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">Score Entries</span>
+        <span class="record-count" id="recordCount">–</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+          <tr>
+            <th onclick="sortBy('archerName')">Name</th>
+            <th onclick="sortBy('agbNumber')">AGB No.</th>
+            <th onclick="sortBy('club')">Club</th>
+            <th onclick="sortBy('category')">Category</th>
+            <th onclick="sortBy('bowType')">Bow</th>
+            <th onclick="sortBy('tier')">Tier</th>
+            <th onclick="sortBy('round')">Round</th>
+            <th onclick="sortBy('totalScore')">Score</th>
+            <th onclick="sortBy('timestamp')">Submitted</th>
+            <th>Edit</th>
+          </tr>
+          </thead>
+          <tbody id="scoreTableBody">
+          <tr class="loading-row"><td colspan="10">Loading scores…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /appScreen -->
+
+<!-- ══════════════ EDIT MODAL ══════════════ -->
+<div class="modal-backdrop" id="editModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Edit Score Entry</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid">
+        <div class="modal-field">
+          <label>Full Name</label>
+          <input type="text" id="editName">
+        </div>
+        <div class="modal-field">
+          <label>AGB Number</label>
+          <input type="text" id="editAgb">
+        </div>
+        <div class="modal-field">
+          <label>Club</label>
+          <input type="text" id="editClub">
+        </div>
+        <div class="modal-field">
+          <label>Category</label>
+          <select id="editCategory">
+            <option>Gent</option>
+            <option>Lady</option>
+            <option>Junior Gent</option>
+            <option>Junior Lady</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Bow Type</label>
+          <select id="editBowType">
+            <option>Recurve</option>
+            <option>Compound</option>
+            <option>Barebow</option>
+            <option>Longbow</option>
+            <option>Traditional</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Tier</label>
+          <select id="editTier" onchange="updateRoundOptions()">
+            <option>Gold</option>
+            <option>Silver</option>
+            <option>Bronze</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Round</label>
+          <select id="editRound"></select>
+        </div>
+        <div class="modal-field">
+          <label>Total Score ✏️</label>
+          <input type="number" id="editScore" class="highlight" min="0" max="1296">
+        </div>
+        <div class="modal-field full">
+          <label>Document ID (read-only)</label>
+          <div class="read-only" id="editDocId" style="font-size:11px; word-break:break-all;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" id="saveBtn" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script type="module">
+  import { initializeApp }                              from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getFirestore, collection, getDocs,
+    doc, updateDoc, serverTimestamp }            from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+  import { getAuth, signInWithEmailAndPassword,
+    signOut, onAuthStateChanged }                from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+  // ── Firebase config (same as scores.html) ──────────────────────────────────
+  const firebaseConfig = {
+    apiKey:            "AIzaSyBiXcIHedwHbD7SVpTedQPH9UxJaVSD9Jo",
+    authDomain:        "osmembership-bc876.firebaseapp.com",
+    projectId:         "osmembership-bc876",
+    storageBucket:     "osmembership-bc876.firebasestorage.app",
+    messagingSenderId: "265215395375",
+    appId:             "1:265215395375:web:2523ab3fefa6f27fafe8da",
+    measurementId:     "G-7Q3KXJ4MYS"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const db   = getFirestore(app);
+  const auth = getAuth(app);
+
+  // ── State ──────────────────────────────────────────────────────────────────
+  let allScores   = [];
+  let filtered    = [];
+  let sortCol     = 'timestamp';
+  let sortDir     = 'desc';
+  let editingDocId = null;
+
+  const roundsByTier = {
+    Gold:   ['Warwick 50','National 50','Western','Windsor','Albion','York/Hereford'],
+    Silver: ['Warwick 40','National 40','American','Western 50','Windsor','Bristol 2'],
+    Bronze: ['Warwick 30','National 30','St Nicholas','Western 40','Windsor 50','Bristol 3']
+  };
+
+  // ── Auth ───────────────────────────────────────────────────────────────────
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('appScreen').style.display   = 'block';
+      document.getElementById('userEmail').textContent      = user.email;
+      loadScores();
+    } else {
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('appScreen').style.display   = 'none';
+    }
+  });
+
+  window.doLogin = async function() {
+    const email    = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const btn      = document.getElementById('loginBtn');
+    const errEl    = document.getElementById('loginError');
+
+    errEl.textContent = '';
+    btn.disabled = true;
+    btn.textContent = 'Signing in…';
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (e) {
+      errEl.textContent = friendlyAuthError(e.code);
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+    }
+  };
+
+  window.doSignOut = async function() {
+    await signOut(auth);
+  };
+
+  // Allow Enter key on password field
+  document.getElementById('loginPassword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') window.doLogin();
+  });
+
+  function friendlyAuthError(code) {
+    const map = {
+      'auth/invalid-email':        'Please enter a valid email address.',
+      'auth/user-not-found':       'No account found with that email.',
+      'auth/wrong-password':       'Incorrect password.',
+      'auth/invalid-credential':   'Invalid email or password.',
+      'auth/too-many-requests':    'Too many attempts. Please try again later.',
+      'auth/network-request-failed':'Network error. Check your connection.'
+    };
+    return map[code] || 'Sign-in failed. Please try again.';
+  }
+
+  // ── Load Scores ────────────────────────────────────────────────────────────
+  window.loadScores = async function() {
+    const tbody = document.getElementById('scoreTableBody');
+    tbody.innerHTML = '<tr class="loading-row"><td colspan="10">Loading scores…</td></tr>';
+
+    try {
+      const snap = await getDocs(collection(db, 'imperialChallengeScores'));
+      allScores = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      applyFilters();
+      updateStats();
+    } catch (e) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="10">Error loading scores: ${e.message}</td></tr>`;
+    }
+  };
+
+  // ── Stats ──────────────────────────────────────────────────────────────────
+  function updateStats() {
+    document.getElementById('statTotal').textContent  = allScores.length;
+    document.getElementById('statGold').textContent   = allScores.filter(s => s.tier === 'Gold').length;
+    document.getElementById('statSilver').textContent = allScores.filter(s => s.tier === 'Silver').length;
+    document.getElementById('statBronze').textContent = allScores.filter(s => s.tier === 'Bronze').length;
+  }
+
+  // ── Filter & Sort ──────────────────────────────────────────────────────────
+  window.applyFilters = function() {
+    const search   = document.getElementById('searchInput').value.toLowerCase();
+    const tier     = document.getElementById('filterTier').value;
+    const bow      = document.getElementById('filterBow').value;
+    const category = document.getElementById('filterCategory').value;
+
+    filtered = allScores.filter(s => {
+      const matchSearch = !search ||
+        (s.archerName  || '').toLowerCase().includes(search) ||
+        (s.agbNumber   || '').toLowerCase().includes(search) ||
+        (s.club        || '').toLowerCase().includes(search);
+      const matchTier     = !tier     || s.tier     === tier;
+      const matchBow      = !bow      || s.bowType  === bow;
+      const matchCategory = !category || s.category === category;
+      return matchSearch && matchTier && matchBow && matchCategory;
+    });
+
+    sortFiltered();
+    renderTable();
+  };
+
+  // ── Sort ───────────────────────────────────────────────────────────────────
+  window.sortBy = function(col) {
+    if (sortCol === col) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortCol = col;
+      sortDir = 'asc';
+    }
+    sortFiltered();
+    renderTable();
+    updateSortHeaders();
+  };
+
+  function sortFiltered() {
+    filtered.sort((a, b) => {
+      let av = a[sortCol], bv = b[sortCol];
+      if (sortCol === 'timestamp') {
+        av = av?.toMillis?.() ?? 0;
+        bv = bv?.toMillis?.() ?? 0;
+      }
+      if (typeof av === 'number') return sortDir === 'asc' ? av - bv : bv - av;
+      return sortDir === 'asc'
+        ? String(av ?? '').localeCompare(String(bv ?? ''))
+        : String(bv ?? '').localeCompare(String(av ?? ''));
+    });
+  }
+
+  function updateSortHeaders() {
+    document.querySelectorAll('thead th').forEach(th => {
+      th.classList.remove('sorted-asc', 'sorted-desc');
+    });
+    // match by onclick attr
+    document.querySelectorAll('thead th').forEach(th => {
+      const attr = th.getAttribute('onclick') || '';
+      if (attr.includes(`'${sortCol}'`)) {
+        th.classList.add(sortDir === 'asc' ? 'sorted-asc' : 'sorted-desc');
+      }
+    });
+  }
+
+  // ── Render Table ───────────────────────────────────────────────────────────
+  function renderTable() {
+    const tbody = document.getElementById('scoreTableBody');
+    document.getElementById('recordCount').textContent =
+      `${filtered.length} of ${allScores.length} record${allScores.length !== 1 ? 's' : ''}`;
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="10">No scores match your filters.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(s => {
+      const ts = s.timestamp?.toDate
+        ? s.timestamp.toDate().toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })
+        : '–';
+
+      return `
+        <tr>
+          <td>${esc(s.archerName)}</td>
+          <td>${esc(s.agbNumber)}</td>
+          <td>${esc(s.club)}</td>
+          <td>${esc(s.category)}</td>
+          <td>${esc(s.bowType)}</td>
+          <td><span class="tier-badge tier-${esc(s.tier)}">${esc(s.tier)}</span></td>
+          <td>${esc(s.round)}</td>
+          <td class="score-cell">${s.totalScore ?? '–'}</td>
+          <td class="timestamp-cell">${ts}</td>
+          <td class="action-cell">
+            <button class="btn-edit" onclick="openEdit('${esc(s.id)}')">✏ Edit</button>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  function esc(v) {
+    return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Edit Modal ─────────────────────────────────────────────────────────────
+  window.openEdit = function(docId) {
+    const score = allScores.find(s => s.id === docId);
+    if (!score) return;
+
+    editingDocId = docId;
+
+    document.getElementById('editName').value     = score.archerName  ?? '';
+    document.getElementById('editAgb').value      = score.agbNumber   ?? '';
+    document.getElementById('editClub').value     = score.club        ?? '';
+    document.getElementById('editCategory').value = score.category    ?? '';
+    document.getElementById('editBowType').value  = score.bowType     ?? '';
+    document.getElementById('editTier').value     = score.tier        ?? 'Gold';
+    document.getElementById('editScore').value    = score.totalScore  ?? '';
+    document.getElementById('editDocId').textContent = docId;
+
+    updateRoundOptions();
+    document.getElementById('editRound').value = score.round ?? '';
+
+    document.getElementById('editModal').classList.add('open');
+    document.getElementById('editScore').focus();
+  };
+
+  window.closeModal = function() {
+    document.getElementById('editModal').classList.remove('open');
+    editingDocId = null;
+  };
+
+  window.updateRoundOptions = function() {
+    const tier   = document.getElementById('editTier').value;
+    const select = document.getElementById('editRound');
+    const rounds = roundsByTier[tier] || [];
+    select.innerHTML = rounds.map(r => `<option>${r}</option>`).join('');
+  };
+
+  window.saveEdit = async function() {
+    if (!editingDocId) return;
+
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+
+    const score = parseInt(document.getElementById('editScore').value) || 0;
+    if (score < 0 || score > 1296) {
+      showToast('Score must be between 0 and 1296', 'error');
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save Changes';
+      return;
+    }
+
+    const updated = {
+      archerName:  document.getElementById('editName').value.trim(),
+      agbNumber:   document.getElementById('editAgb').value.trim(),
+      club:        document.getElementById('editClub').value.trim(),
+      category:    document.getElementById('editCategory').value,
+      bowType:     document.getElementById('editBowType').value,
+      tier:        document.getElementById('editTier').value,
+      round:       document.getElementById('editRound').value,
+      totalScore:  score,
+      lastEdited:  serverTimestamp()
+    };
+
+    try {
+      await updateDoc(doc(db, 'imperialChallengeScores', editingDocId), updated);
+
+      // Update local cache
+      const idx = allScores.findIndex(s => s.id === editingDocId);
+      if (idx !== -1) allScores[idx] = { ...allScores[idx], ...updated };
+
+      applyFilters();
+      updateStats();
+      closeModal();
+      showToast('Score updated successfully', 'success');
+    } catch (e) {
+      showToast('Error saving: ' + e.message, 'error');
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save Changes';
+    }
+  };
+
+  // Close modal on backdrop click
+  document.getElementById('editModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('editModal')) closeModal();
+  });
+
+  // ── Toast ──────────────────────────────────────────────────────────────────
+  function showToast(msg, type) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className   = type;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+  }
+</script>
+
+</body>
+</html>

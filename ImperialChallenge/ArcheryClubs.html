@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Archery Clubs Map - Imperial Challenge</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
+  <link rel="stylesheet" href="./css/imperial-challenge.css">
+  <style>
+    html, body { height: 100%; }
+    body { display: flex; flex-direction: column; }
+
+    .map-app {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* ---------- Sidebar ---------- */
+    .map-sidebar {
+      width: 340px;
+      min-width: 340px;
+      background: #f8f9fa;
+      border-right: 1px solid #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .map-sidebar-header {
+      background: linear-gradient(135deg, #4a5c8c 0%, #3d4d73 100%);
+      color: white;
+      padding: 1rem 1.2rem;
+      border-bottom: 3px solid #e91e63;
+    }
+
+    .map-sidebar-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 0.2rem;
+    }
+
+    .map-sidebar-header .count {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .map-sidebar-header .count b { color: #ffd700; }
+
+    .map-hint {
+      padding: 0.7rem 1rem;
+      font-size: 0.8rem;
+      color: #666;
+      border-bottom: 1px solid #e0e0e0;
+      background: #fff;
+    }
+
+    .club-list {
+      list-style: none;
+      margin: 0;
+      padding: 0.3rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .club-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      padding: 0.65rem 0.7rem;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .club-item:hover { background: rgba(74, 92, 140, 0.1); }
+
+    .club-item.active { background: #4a5c8c; }
+    .club-item.active .club-name { color: white; }
+    .club-item.active .club-addr { color: rgba(255,255,255,0.75); }
+    .club-item.active .club-num { color: #ffd700; }
+
+    .club-num {
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: #999;
+      min-width: 1.6rem;
+      padding-top: 0.15rem;
+    }
+
+    .club-name {
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: #333;
+      margin: 0 0 0.15rem;
+    }
+
+    .club-addr {
+      font-size: 0.76rem;
+      color: #666;
+      line-height: 1.35;
+    }
+
+    /* ---------- Map ---------- */
+    #map {
+      flex: 1;
+      height: 100%;
+    }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    .popup-name {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #4a5c8c;
+      margin: 0 0 0.25rem;
+    }
+
+    .popup-addr {
+      font-size: 0.8rem;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    .popup-link {
+      margin-top: 0.35rem;
+      font-size: 0.78rem;
+    }
+
+    .popup-link a {
+      color: #4a5c8c;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .popup-link a:hover { text-decoration: underline; }
+
+    .pending-search {
+      margin: 0.2rem 0 0;
+      font-size: 0.74rem;
+    }
+
+    .pending-search a {
+      color: #4a5c8c;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .pending-search a:hover { text-decoration: underline; }
+
+    .target-marker {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .target-marker svg { filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
+
+    .club-list::-webkit-scrollbar { width: 8px; }
+    .club-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
+
+    /* ---------- Auto-located clubs (from new registrations) ---------- */
+    .auto-tag {
+      display: inline-block;
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: #8a8f98;
+      background: #eceef1;
+      border-radius: 4px;
+      padding: 1px 5px;
+      margin-left: 4px;
+      text-transform: uppercase;
+      vertical-align: middle;
+    }
+
+    .popup-auto {
+      margin-top: 0.4rem;
+      font-size: 0.72rem;
+      color: #8a8f98;
+      font-style: italic;
+    }
+
+    .club-item.pending { cursor: default; opacity: 0.55; }
+    .club-item.pending:hover { background: none; }
+
+    /* ---------- Marker cluster (numbered badge for co-located clubs) ---------- */
+    .cluster-marker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #4a5c8c;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      color: #fff;
+      font-weight: 700;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+    }
+    .cluster-marker span { color: #ffd700; }
+
+    @media (max-width: 768px) {
+      .map-sidebar { width: 220px; min-width: 220px; }
+
+      /* Keep header/footer compact so the map has room to breathe */
+      .header {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 8px 12px;
+        gap: 6px 14px;
+      }
+      .header .logo { height: 40px; }
+      .header h1 {
+        order: 3;
+        width: 100%;
+        text-align: center;
+        font-size: 1rem;
+        margin: 0;
+      }
+      .nav-links {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px 12px;
+      }
+      .nav-links a { font-size: 0.78rem; }
+
+      .footer { padding: 8px; margin-top: 0; }
+      .footer p { font-size: 0.72rem; margin: 2px 0; }
+    }
+
+    @media (max-width: 540px) {
+      .map-app { flex-direction: column; }
+      .map-sidebar { width: 100%; min-width: 0; height: 220px; }
+      #map { min-height: 55vh; }
+
+      /* Even tighter on phones */
+      .header h1 { display: none; }
+      .header .logo { height: 32px; }
+      .nav-links a { font-size: 0.72rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-container">
+    <a href="https://www.osarchers.co.uk" target="_blank">
+      <img src="img/OSA%20logo@2x.png" alt="OS Archers Logo" class="logo">
+    </a>
+  </div>
+  <h1>Archery Clubs Map</h1>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="enter.html">Enter</a>
+    <a href="scores.html">Submit Scores</a>
+    <a href="myscores.html">My Scores</a>
+    <a href="ICRounds.html">Imperial Rounds</a>
+    <a href="ArcheryClubs.html">Clubs Map</a>
+  </nav>
+</header>
+
+<div class="map-app">
+  <div class="map-sidebar">
+    <div class="map-sidebar-header">
+      <h2>Archery Clubs</h2>
+      <div class="count"><b id="club-count">0</b> clubs mapped &middot; UK &amp; Channel Islands</div>
+    </div>
+    <div class="map-hint">Click a club to centre the map and view its details. Clubs tagged <span class="auto-tag">auto</span> were located automatically from new registrations.</div>
+    <ul class="club-list" id="club-list"></ul>
+  </div>
+  <div id="map"></div>
+</div>
+
+<footer class="footer">
+  <p>&copy; 2026 Ordnance Survey Archers. Founded 2019.</p>
+  <p><a href="https://www.osarchers.co.uk">Visit our main website</a></p>
+</footer>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBiXcIHedwHbD7SVpTedQPH9UxJaVSD9Jo",
+    authDomain: "osmembership-bc876.firebaseapp.com",
+    projectId: "osmembership-bc876",
+    storageBucket: "osmembership-bc876.firebasestorage.app",
+    messagingSenderId: "265215395375",
+    appId: "1:265215395375:web:2523ab3fefa6f27fafe8da",
+    measurementId: "G-7Q3KXJ4MYS"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const STATIC_CLUBS = [
+    { name: "OS Archers", venue: "Ordnance Survey Archers", address: "Adanac Dr, Nursling, Southampton SO16 0AS", lat: 50.9378972, lng: -1.4692141, website: "https://www.osarchers.co.uk/" },
+    { name: "Southampton Archery Club", venue: "Hardmoor Sports Ground", address: "Stoneham Lane, Eastleigh SO50 9HT", lat: 50.9505396, lng: -1.3823891, website: "https://www.southamptonarcheryclub.org/" },
+    { name: "Overton Black Arrows", venue: "Overton Black Arrows", address: "Laverstoke, Whitchurch RG28 7NY", lat: 51.2328620, lng: -1.2991839, website: "https://www.overtonblackarrows.org/" },
+    { name: "Waterside Archers", venue: "Exbury Range", address: "Summer Ln, Southampton SO45 1AZ", lat: 50.8071124, lng: -1.4026624, website: "https://www.watersidearchers.co.uk" },
+    { name: "Southend District", venue: "Southend and District Archery Club", address: "Clements Hall Way, Hawkwell, Hockley SS5 4LN", lat: 51.5946757, lng: 0.6721935, website: "https://southendanddistrictarchery.co.uk/" },
+    { name: "Kirton in Lindsey", venue: "Kirton In Lindsey Archery Club", address: "KLASSIC Park Fields, Ings Rd, Kirton in Lindsey, Gainsborough DN21 4BX", lat: 53.4769300, lng: -0.6034990, website: "https://klac.co.uk/" },
+    { name: "Devizes Bowmen", venue: "Devizes Bowmen", address: "Green Lane Playing Fields, Devizes SN10 5DS", lat: 51.3367558, lng: -1.9818091, website: "https://www.devizes-bowmen.co.uk/" },
+    { name: "Brent Valley Archers / Rickmansworth Archery Club", venue: "Brent Valley Archers", address: "Perivale Community Centre, Horsenden Ln S, Greenford UB6 7NP", lat: 51.5410685, lng: -0.3251656, website: "https://brentvalleyarchers.co.uk/" },
+    { name: "Andover Archers", venue: "Andover Archery Club", address: "Foxcotte Ln, Andover SP11 0TA", lat: 51.2328354, lng: -1.4991081, website: "https://andoverarchers.org/" },
+    { name: "Forest of Bere Bowmen", venue: "Forest of Bere Archery", address: "Blendworth Ln, Horndean, Waterlooville PO8 0DG", lat: 50.9122665, lng: -0.9905347, website: "https://www.fobb.uk/" },
+    { name: "Bowmen of Guernsey", venue: "Bowmen of Guernsey", address: "Guernsey GY6", lat: 49.4853232, lng: -2.5818153, website: "https://www.bowmenofguernsey.co.uk/" },
+    { name: "Bath Archers", venue: "Bath Archers", address: "London Rd W, Bath BA1 7DD", lat: 51.4001545, lng: -2.3286524, website: "https://batharchers.org/" },
+    { name: "Talisman Bowmen", venue: "Talisman Bowmen Outdoor Range", address: "345b Hunts Pond Rd, Park Gate, Fareham PO14 4PD", lat: 50.8539060, lng: -1.2526140, website: "https://talismanbowmen.com/" },
+    { name: "Evesham Archery Club", venue: "Evesham Archery Club", address: "Brewers Ln, Badsey, Evesham WR11 7EU", lat: 52.0891132, lng: -1.8891031, website: "https://www.eveshamarcheryclub.com/" },
+    { name: "Perth Archery Club", venue: "Doo'cot Park (outdoor range)", address: "Pitcullen Cres, Perth PH2 7HU", lat: 56.4065723, lng: -3.4210769, website: "https://pertharcheryclub.org/" },
+    { name: "Clophill Archery Club", venue: "Clophill Archery Club", address: "Clophill, Bedford MK45 4DA", lat: 52.0321026, lng: -0.4204501, website: "https://clophillac.co.uk/" },
+    { name: "Towcester Archers", venue: "Towcester Archers", address: "Greens, Norton Road, Towcester NN12 8AW", lat: 52.1415246, lng: -1.0063796, website: "https://towcesterarchers.co.uk/" },
+    { name: "Bowmen of Lytchett", venue: "The Bowmen Of Lytchett Archery Club", address: "Worgret Rd, Wareham BH20 4PH", lat: 50.6818963, lng: -2.1215863, website: "https://bowmenoflytchett.co.uk/" },
+    { name: "Stalybridge Archery Club", venue: "Stalybridge Archery Club", address: "Mottram Rd, Stalybridge SK15 2QS", lat: 53.4779847, lng: -2.0448142, website: "https://www.stalybridgearcheryclub.uk/" },
+    { name: "Ham and Petersham", venue: "Ham & Petersham Rifle & Pistol Club", address: "The Ranges, Ham St, Richmond TW10 7RT", lat: 51.4431587, lng: -0.3210282, website: "https://www.hprpc.co.uk/disciplines/archery/reference" },
+    { name: "Abbeydale Archers", venue: "De La Salle Association", address: "Beauchief Abbey Lane, Sheffield S8 7BA", lat: 53.3289623, lng: -1.5039113, website: "https://abbeydalearchers.com/" },
+    { name: "Ebor Archers", venue: "York RI Sports Ground", address: "New Lane, Holgate, York", lat: 53.9536612, lng: -1.1106501, website: "https://www.eborarchers.com/" },
+    { name: "Phoenix Bowmen", venue: "Old Rishworthians RUFC", address: "Copley, Halifax HX3 0UG", lat: 53.7127937, lng: -1.8875221, website: "https://www.phoenixbowmen.co.uk/" },
+    { name: "The Valley Bowmen of Huddersfield", venue: "Knowle Lane Ground", address: "Knowle Lane, Meltham, Huddersfield HD9 4HL", lat: 53.5917295, lng: -1.8370815, website: "https://valleybowmen.co.uk/" },
+    { name: "Nethermoss Archers", venue: "Hurlston Hall", address: "Hurlston Lane, Scarisbrick, Ormskirk L40 8HB", lat: 53.5884225, lng: -2.9039879, website: "https://www.nethermoss.co.uk/" },
+    { name: "Bowbearers of Wyresdale", venue: "Wyresdale Park", address: "Snowhill Lane, Scorton, Preston PR3 1BA", lat: 53.9331679, lng: -2.7600726, website: "https://bowbearers.co.uk/" },
+    { name: "Yeo Bowmen", venue: "Johnson Park (Yeovil Sports & Social Club)", address: "Coronation Avenue, Yeovil, Somerset BA21 3DX", lat: 50.9522634, lng: -2.6486018, website: "https://yeobowmen.co.uk/" },
+    { name: "Bannockburn Bowmen", venue: "Strathallan Games Park", address: "Pullar Ave, Bridge of Allan, Stirling FK9 4SR", lat: 56.1479800, lng: -3.9414300, website: "https://www.bannockburnbowmen.org/" },
+    { name: "Blundellsands Archers", venue: "Merchant Taylors School playing fields", address: "Liverpool Road, Great Crosby, Crosby, Liverpool L23 5SP", lat: 53.4895733, lng: -3.0252022, website: "https://blundellsandsarchers.uk/" },
+    { name: "Coastal Archers", venue: "RM Playing Fields", address: "Cossington, Somerset TA7 8LZ", lat: 51.1599600, lng: -2.9285700, website: "https://coastalarchers.co.uk/" },
+    { name: "Rugby Archers", venue: "Rugby Thornfield Indoor Bowls Club", address: "Bruce Williams Way, Rugby CV22 5LZ", lat: 52.3651600, lng: -1.2517500, website: "https://rugbyarchers.co.uk/" }
+  ];
+
+  // Known spelling/casing variants seen in registrations, mapped to the
+  // curated (accurately geocoded) club name above — so messy free-text
+  // club names don't spawn duplicate auto-located pins.
+  const CLUB_ALIASES = {
+    'osa': 'OS Archers',
+    'os': 'OS Archers',
+    'o s archers': 'OS Archers',
+    'ordnance survey archers': 'OS Archers',
+    'southend and district archery club': 'Southend District',
+    'southend district': 'Southend District',
+    'clophill archery': 'Clophill Archery Club',
+    'fore of bere bowmen': 'Forest of Bere Bowmen',
+    'forest of bere bowmen': 'Forest of Bere Bowmen',
+    'brent valley archers': 'Brent Valley Archers / Rickmansworth Archery Club',
+    'rickmansworth archery club': 'Brent Valley Archers / Rickmansworth Archery Club',
+    'brent valley archers/rickmansworth archery club': 'Brent Valley Archers / Rickmansworth Archery Club',
+    'yeobowmen': 'Yeo Bowmen',
+    'yeo bowmen': 'Yeo Bowmen',
+    'valley bowmen of huddersfield': 'The Valley Bowmen of Huddersfield',
+    'the valley bowmen of huddersfield': 'The Valley Bowmen of Huddersfield'
+  };
+
+  const clubs = [];
+  const markers = [];
+  const listEl = document.getElementById('club-list');
+  const countEl = document.getElementById('club-count');
+
+  const map = L.map('map', { zoomControl: true }).setView([52.6, -1.8], 6);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  function targetIcon(active, auto) {
+    const ring  = active ? '#e91e63' : (auto ? '#8a8f98' : '#4a5c8c');
+    const dot   = active ? '#ffd700' : '#e91e63';
+    const fill  = active ? '#fff'    : '#f8f9fa';
+    const dash  = auto ? ' stroke-dasharray="3,2"' : '';
+    return L.divIcon({
+      className: 'target-marker',
+      html: `<svg width="28" height="28" viewBox="0 0 28 28">
+               <circle cx="14" cy="14" r="12" fill="${fill}" stroke="${ring}" stroke-width="2.5"${dash}/>
+               <circle cx="14" cy="14" r="7.5" fill="none" stroke="${ring}" stroke-width="2"/>
+               <circle cx="14" cy="14" r="3" fill="${dot}"/>
+             </svg>`,
+      iconSize: [28, 28],
+      iconAnchor: [14, 14],
+      popupAnchor: [0, -12]
+    });
+  }
+
+  // Groups nearby clubs into a single numbered marker; expands on click/zoom.
+  const clusterGroup = L.markerClusterGroup({
+    maxClusterRadius: 45,
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    iconCreateFunction(cluster) {
+      const count = cluster.getChildCount();
+      const size = count < 10 ? 34 : 40;
+      return L.divIcon({
+        html: `<div class="cluster-marker" style="width:${size}px;height:${size}px;font-size:${count < 10 ? 13 : 14}px;"><span>${count}</span></div>`,
+        className: '',
+        iconSize: [size, size]
+      });
+    }
+  });
+
+  function addClub(club) {
+    const i = clubs.push(club) - 1;
+    const marker = L.marker([club.lat, club.lng], { icon: targetIcon(false, club.auto) });
+    marker.bindPopup(
+      `<div class="popup-name">${club.name}</div>
+       <div class="popup-addr">${club.venue}<br>${club.address}</div>${club.website ? `<div class="popup-link"><a href="${club.website}" target="_blank" rel="noopener noreferrer">Club website ↗</a></div>` : ''}${club.auto ? '<div class="popup-auto">📍 Location approximate — auto-detected from registration</div>' : ''}`
+    );
+    markers.push(marker);
+    clusterGroup.addLayer(marker);
+
+    const li = document.createElement('li');
+    li.className = 'club-item';
+    li.id = 'item-' + i;
+    li.innerHTML = `
+      <span class="club-num">${String(i + 1).padStart(2, '0')}</span>
+      <div>
+        <p class="club-name">${club.name}${club.auto ? ' <span class="auto-tag">auto</span>' : ''}</p>
+        <p class="club-addr">${club.address}</p>
+      </div>`;
+    li.addEventListener('click', () => focusClub(i));
+    listEl.appendChild(li);
+
+    marker.on('click', () => focusClub(i));
+    countEl.textContent = clubs.length;
+    return i;
+  }
+
+  function addPendingClub(name) {
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(name + ' archery club UK')}`;
+    const li = document.createElement('li');
+    li.className = 'club-item pending';
+    li.innerHTML = `
+      <span class="club-num">–</span>
+      <div>
+        <p class="club-name">${name}</p>
+        <p class="club-addr">Location not yet mapped</p>
+        <p class="pending-search"><a href="${searchUrl}" target="_blank" rel="noopener noreferrer">Search for this club ↗</a></p>
+      </div>`;
+    listEl.appendChild(li);
+  }
+
+  STATIC_CLUBS.forEach(addClub);
+  map.addLayer(clusterGroup);
+
+  let activeIndex = null;
+  function focusClub(i) {
+    if (activeIndex !== null) {
+      markers[activeIndex].setIcon(targetIcon(false, clubs[activeIndex].auto));
+      document.getElementById('item-' + activeIndex).classList.remove('active');
+    }
+    activeIndex = i;
+    markers[i].setIcon(targetIcon(true, clubs[i].auto));
+    document.getElementById('item-' + i).classList.add('active');
+    clusterGroup.zoomToShowLayer(markers[i], () => markers[i].openPopup());
+    document.getElementById('item-' + i).scrollIntoView({ block: 'nearest' });
+  }
+
+  const group = L.featureGroup(markers);
+  map.fitBounds(group.getBounds().pad(0.15));
+
+  function normalize(name) {
+    return name.trim().replace(/\s+/g, ' ').toLowerCase();
+  }
+
+  function resolveKnownClub(rawName) {
+    const key = normalize(rawName);
+    const aliased = CLUB_ALIASES[key];
+    if (aliased) return clubs.find(c => c.name === aliased) || null;
+    return clubs.find(c => normalize(c.name) === key) || null;
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  // A bare club name can spuriously match an unrelated OSM feature that just
+  // happens to share words with it (e.g. "Rugby archers" once matched a
+  // residential street called "Archers Spinney"). These classes are geographic
+  // features, never a sports venue, so treat a top hit in one of them as no match.
+  const REJECTED_OSM_CLASSES = new Set(['highway', 'boundary', 'railway', 'waterway', 'natural']);
+
+  // Free-text club names don't come with a venue address, so new clubs
+  // are geocoded by name via Nominatim. Results are cached in localStorage
+  // (keyed per browser) so repeat visits don't re-query, and lookups are
+  // spaced out to stay under Nominatim's ~1 request/second usage policy.
+  async function nominatimSearch(q) {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=gb,je,gg,im&extratags=1&q=${encodeURIComponent(q)}`;
+    const response = await fetch(url);
+    const results = await response.json();
+    const top = results[0];
+    if (!top || REJECTED_OSM_CLASSES.has(top.class)) return null;
+    const extratags = top.extratags || {};
+    return {
+      lat: parseFloat(top.lat),
+      lng: parseFloat(top.lon),
+      website: extratags.website || extratags['contact:website'] || null
+    };
+  }
+
+  async function geocodeClub(name) {
+    const cacheKey = 'clubGeo3:' + normalize(name);
+    const cached = localStorage.getItem(cacheKey);
+    if (cached !== null) return JSON.parse(cached);
+
+    try {
+      // The bare club name matches best when it's already an OSM POI;
+      // only fall back to a qualified query for generic/ambiguous names.
+      let coords = await nominatimSearch(name);
+      if (!coords) {
+        await sleep(1100);
+        coords = await nominatimSearch(name + ' archery club, UK');
+      }
+      localStorage.setItem(cacheKey, JSON.stringify(coords));
+      return coords;
+    } catch (error) {
+      console.error('Geocoding failed for', name, error);
+      return null;
+    }
+  }
+
+  // Reads registrations to find clubs not already on the map. Only the
+  // clubName field is read from each document — no other registrant data
+  // (name, email, address, AGB number) is touched or displayed here.
+  async function discoverClubsFromRegistrations() {
+    try {
+      const snapshot = await getDocs(collection(db, 'imperialChallengeEntries'));
+      const rawNames = new Set();
+      snapshot.forEach(doc => {
+        const name = (doc.data().clubName || '').trim();
+        if (name) rawNames.add(name);
+      });
+
+      const pendingSeen = new Set();
+
+      for (const rawName of rawNames) {
+        if (resolveKnownClub(rawName)) continue;
+
+        const coords = await geocodeClub(rawName);
+        if (coords) {
+          addClub({
+            name: rawName,
+            venue: rawName,
+            address: 'Location approximate — from club registration',
+            lat: coords.lat,
+            lng: coords.lng,
+            website: coords.website,
+            auto: true
+          });
+        } else {
+          const key = normalize(rawName);
+          if (!pendingSeen.has(key)) {
+            pendingSeen.add(key);
+            addPendingClub(rawName);
+          }
+        }
+        await sleep(1100);
+      }
+    } catch (error) {
+      console.error('Error loading clubs from registrations:', error);
+    }
+  }
+
+  discoverClubsFromRegistrations();
+</script>
+
+</body>
+</html>

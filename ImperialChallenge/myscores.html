@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="Ordnance, Survey, Archers, Archer GB, Southern, Couties, Archery, Society, Hampshire, Archery,Association, Bows, Arrows, Fun, Family, Friendly, Club, Members, Great, Britain, Compound, Recurve, Longbow, Crossbow, Olympic, Target, Wand, Nursling, Southampton, Barebow, Senior, Junior, Safe, Totton, Waterside, Hythe, New Forest ,World, Coaching, Beginners, Competition, Hidden Dragon, NFAS, AGB, SCAS, HAA, Merlin Archery, Quicks Arhcer, Bow Sports,&quot;Southern Counties Archery Society&quot;,&quot;Hampshire Archery Association&quot;,&quot;Archery Club Southampton&quot;,&quot;Family Friendly Archery&quot;,&quot;Archery Coaching for Beginners&quot;,&quot;Archery Competition Totton&quot;,&quot;Compound and Recurve Archery&quot;,&quot;Olympic Target Archery&quot;,&quot;Barebow Archery New Forest&quot;,&quot;Archery Equipment Suppliers&quot;,&quot;Archery Fun for Juniors&quot;,&quot;Archery in Waterside Hythe&quot;,&quot;NFAS (National Field Archery Society) Events&quot;,&quot;AGB (Archery GB) Affiliated Club&quot;,&quot;Safe Archery Practices&quot;,&quot;Archery Gear&quot;,&quot;Bow Hunting&quot;,&quot;Target Archery&quot;,&quot;Archery Equipment&quot;,&quot;Archery Techniques&quot;,&quot;Bow and Arrow&quot;,&quot;Archery Supplies&quot;,&quot;Traditional Archery&quot;,&quot;Archery Tips&quot;,&quot;Archery Training&quot;">
+
+  <title>Imperial Challenge - My Scores</title>
+  <link rel="stylesheet" href="css/imperial-challenge.css">
+
+</head>
+<body>
+<header class="header">
+  <div class="logo-container">
+    <a href="https://www.osarchers.co.uk" target="_blank">
+      <img src="img/OSA%20logo@2x.png" alt="OS Archers Logo" class="logo">
+    </a>
+  </div>
+  <h1>Imperial Challenge MY Scores</h1>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="enter.html">Enter</a>
+    <a href="scores.html">Submit Scores</a>
+    <a href="myscores.html">My Scores</a>
+    <a href="ICRounds.html">Imperial Rounds</a>
+    <a href="ArcheryClubs.html">Clubs Map</a>
+  </nav>
+</header>
+
+  <div class="content">
+    <div id="message" class="message"></div>
+
+    <div class="search-section">
+      <h2 style="margin-bottom: 20px; color: #1e3c72;">Enter Your AGB Number</h2>
+      <form class="search-form" onsubmit="searchScores(event)">
+        <div class="form-group">
+          <label for="agbNumber">AGB Number</label>
+          <input type="text" id="agbNumber" required placeholder="e.g. 123456">
+        </div>
+        <button type="submit" class="btn" id="searchBtn">View My Scores</button>
+      </form>
+    </div>
+
+    <div id="loadingSection" class="loading" style="display: none;">
+      <div class="spinner"></div>
+      <p>Loading your scores...</p>
+    </div>
+
+    <div id="resultsSection" class="results-section">
+      <div class="results-header">
+        <h2>Your Scores</h2>
+        <div class="results-summary">
+          <div class="summary-item">
+            <span class="summary-label">Total Rounds Shot</span>
+            <span class="summary-value" id="totalRounds">0</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Highest Score</span>
+            <span class="summary-value" id="highestScore">0</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Average Score</span>
+            <span class="summary-value" id="averageScore">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="scoresGrid" class="scores-grid"></div>
+
+      <div id="noResults" class="no-results" style="display: none;">
+        <div class="no-results-icon">🎯</div>
+        <h3>No Scores Found</h3>
+        <p>No scores have been recorded for this AGB number yet.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getFirestore, collection, query, where, getDocs, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBiXcIHedwHbD7SVpTedQPH9UxJaVSD9Jo",
+    authDomain: "osmembership-bc876.firebaseapp.com",
+    projectId: "osmembership-bc876",
+    storageBucket: "osmembership-bc876.firebasestorage.app",
+    messagingSenderId: "265215395375",
+    appId: "1:265215395375:web:2523ab3fefa6f27fafe8da",
+    measurementId: "G-7Q3KXJ4MYS"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  function showMessage(message, type) {
+    const messageEl = document.getElementById('message');
+    messageEl.textContent = message;
+    messageEl.className = 'message ' + type;
+    messageEl.style.display = 'block';
+
+    setTimeout(() => {
+      messageEl.style.display = 'none';
+    }, 5000);
+  }
+
+  function formatDate(timestamp) {
+    if (!timestamp) return 'Unknown';
+
+    // Handle Firestore Timestamp
+    let date;
+    if (timestamp.toDate) {
+      date = timestamp.toDate();
+    } else if (timestamp.seconds) {
+      date = new Date(timestamp.seconds * 1000);
+    } else {
+      date = new Date(timestamp);
+    }
+
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+  }
+
+  function getTierClass(tier) {
+    if (!tier) return '';
+    return tier.toLowerCase();
+  }
+
+  function createScoreCard(score) {
+    const tierClass = getTierClass(score.tier);
+    const date = formatDate(score.timestamp);
+
+    return `
+                <div class="score-card ${tierClass}">
+                    <div class="tier-badge ${tierClass}">${score.tier || 'N/A'} Tier</div>
+                    <div class="round-name">${score.round || 'Unknown Round'}</div>
+                    <div class="score-value">${score.totalScore}</div>
+                    <div class="score-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Bow Type</span>
+                            <span class="detail-value">${score.bowType || 'N/A'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Category</span>
+                            <span class="detail-value">${score.category || 'N/A'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Date</span>
+                            <span class="detail-value">${date}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+  }
+
+  window.searchScores = async function(event) {
+    event.preventDefault();
+
+    const agbNumber = document.getElementById('agbNumber').value.trim();
+
+    if (!agbNumber) {
+      showMessage('Please enter your AGB number', 'error');
+      return;
+    }
+
+    const searchBtn = document.getElementById('searchBtn');
+    const loadingSection = document.getElementById('loadingSection');
+    const resultsSection = document.getElementById('resultsSection');
+    const scoresGrid = document.getElementById('scoresGrid');
+    const noResults = document.getElementById('noResults');
+
+    // Show loading
+    searchBtn.disabled = true;
+    loadingSection.style.display = 'block';
+    resultsSection.style.display = 'none';
+
+    try {
+      // Query Firestore for scores matching the AGB number
+      const scoresRef = collection(db, 'imperialChallengeScores');
+      const q = query(
+        scoresRef,
+        where('agbNumber', '==', agbNumber),
+        orderBy('timestamp', 'desc')
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        // No scores found
+        loadingSection.style.display = 'none';
+        resultsSection.style.display = 'block';
+        scoresGrid.innerHTML = '';
+        noResults.style.display = 'block';
+        showMessage('No scores found for this AGB number', 'info');
+      } else {
+        // Process scores
+        const scores = [];
+        querySnapshot.forEach((doc) => {
+          scores.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+
+        // Calculate statistics
+        const totalRounds = scores.length;
+        const totalScoreSum = scores.reduce((sum, score) => sum + (score.totalScore || 0), 0);
+        const highestScore = Math.max(...scores.map(s => s.totalScore || 0));
+        const averageScore = Math.round(totalScoreSum / totalRounds);
+
+        // Update summary
+        document.getElementById('totalRounds').textContent = totalRounds;
+        document.getElementById('highestScore').textContent = highestScore;
+        document.getElementById('averageScore').textContent = averageScore;
+
+        // Display score cards
+        scoresGrid.innerHTML = scores.map(score => createScoreCard(score)).join('');
+        noResults.style.display = 'none';
+
+        // Show results
+        loadingSection.style.display = 'none';
+        resultsSection.style.display = 'block';
+
+        // Scroll to results
+        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+    } catch (error) {
+      console.error('Error fetching scores:', error);
+      showMessage('Error loading scores: ' + error.message, 'error');
+      loadingSection.style.display = 'none';
+    } finally {
+      searchBtn.disabled = false;
+    }
+  };
+
+  console.log('Score viewer loaded');
+</script>
+
+<footer class="footer">
+  <p>&copy; 2026 Ordnance Survey Archers. Founded 2019.</p>
+  <p><a href="https://www.osarchers.co.uk">Visit our main website</a></p>
+</footer>
+</body>
+</html>

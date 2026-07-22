@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="Ordnance, Survey, Archers, Archer GB, Southern, Couties, Archery, Society, Hampshire, Archery,Association, Bows, Arrows, Fun, Family, Friendly, Club, Members, Great, Britain, Compound, Recurve, Longbow, Crossbow, Olympic, Target, Wand, Nursling, Southampton, Barebow, Senior, Junior, Safe, Totton, Waterside, Hythe, New Forest ,World, Coaching, Beginners, Competition, Hidden Dragon, NFAS, AGB, SCAS, HAA, Merlin Archery, Quicks Arhcer, Bow Sports,&quot;Southern Counties Archery Society&quot;,&quot;Hampshire Archery Association&quot;,&quot;Archery Club Southampton&quot;,&quot;Family Friendly Archery&quot;,&quot;Archery Coaching for Beginners&quot;,&quot;Archery Competition Totton&quot;,&quot;Compound and Recurve Archery&quot;,&quot;Olympic Target Archery&quot;,&quot;Barebow Archery New Forest&quot;,&quot;Archery Equipment Suppliers&quot;,&quot;Archery Fun for Juniors&quot;,&quot;Archery in Waterside Hythe&quot;,&quot;NFAS (National Field Archery Society) Events&quot;,&quot;AGB (Archery GB) Affiliated Club&quot;,&quot;Safe Archery Practices&quot;,&quot;Archery Gear&quot;,&quot;Bow Hunting&quot;,&quot;Target Archery&quot;,&quot;Archery Equipment&quot;,&quot;Archery Techniques&quot;,&quot;Bow and Arrow&quot;,&quot;Archery Supplies&quot;,&quot;Traditional Archery&quot;,&quot;Archery Tips&quot;,&quot;Archery Training&quot;">
+
+  <title>Enter - Imperial Challenge 2026</title>
+  <link rel="stylesheet" href="css/imperial-challenge.css">
+
+</head>
+<body>
+<header class="header">
+  <div class="logo-container">
+    <a href="https://www.osarchers.co.uk" target="_blank">
+      <img src="img/OSA%20logo@2x.png" alt="OS Archers Logo" class="logo">
+    </a>
+  </div>
+  <h1>Imperial Challenge Entry</h1>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="enter.html">Enter</a>
+    <a href="scores.html">Submit Scores</a>
+    <a href="myscores.html">My Scores</a>
+    <a href="ICRounds.html">Imperial Rounds</a>
+    <a href="ArcheryClubs.html">Clubs Map</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div class="entry-card">
+    <h1>Imperial Challenge Enter</h1>
+    <p class="subtitle">Submit your entry details below</p>
+
+    <form id="entryForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name *</label>
+          <input type="text" id="firstName" name="firstName" required>
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name *</label>
+          <input type="text" id="lastName" name="lastName" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address *</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="postalAddress">Postal Address *</label>
+        <textarea id="postalAddress" name="postalAddress" rows="3" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="agbNumber">AGB Number *</label>
+        <input type="text" id="agbNumber" name="agbNumber" required>
+      </div>
+
+      <div class="form-group">
+        <label for="clubName">Club Name *</label>
+        <input type="text" id="clubName" name="clubName" required>
+      </div>
+
+      <div class="form-group">
+        <label style="display: flex; align-items: flex-start; gap: 10px;">
+          <input type="checkbox" id="gdprConsent" name="gdprConsent" required style="margin-top: 4px;">
+          <span>I agree to the collection and use of my data for this challenge. *</span>
+        </label>
+      </div>
+
+      <button type="submit" class="submit-button" id="submitBtn">Submit Entry</button>
+
+      <div class="status-message success" id="successMessage">
+        Entry submitted successfully. Thank you!
+      </div>
+      <div class="status-message error" id="errorMessage">
+        Something went wrong. Please try again.
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>&copy; 2026 Ordnance Survey Archers. Founded 2019.</p>
+  <p><a href="https://www.osarchers.co.uk">Visit our main website</a></p>
+</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBiXcIHedwHbD7SVpTedQPH9UxJaVSD9Jo",
+    authDomain: "osmembership-bc876.firebaseapp.com",
+    projectId: "osmembership-bc876",
+    storageBucket: "osmembership-bc876.firebasestorage.app",
+    messagingSenderId: "265215395375",
+    appId: "1:265215395375:web:51021ab5e1022134afe8da",
+    measurementId: "G-7WZ5413X3B"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const entryForm = document.getElementById("entryForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const successMessage = document.getElementById("successMessage");
+  const errorMessage = document.getElementById("errorMessage");
+
+  entryForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    successMessage.classList.remove("show");
+    errorMessage.classList.remove("show");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+
+    const entryData = {
+      firstName: document.getElementById("firstName").value.trim(),
+      lastName: document.getElementById("lastName").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      postalAddress: document.getElementById("postalAddress").value.trim(),
+      agbNumber: document.getElementById("agbNumber").value.trim(),
+      clubName: document.getElementById("clubName").value.trim(),
+      gdprConsent: document.getElementById("gdprConsent").checked,
+      createdAt: serverTimestamp()
+    };
+
+    if (!entryData.gdprConsent) {
+      errorMessage.textContent = "Please confirm GDPR consent before submitting.";
+      errorMessage.classList.add("show");
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Submit Entry";
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "imperialChallengeEntries"), entryData);
+      entryForm.reset();
+      successMessage.classList.add("show");
+    } catch (error) {
+      console.error("Firebase write failed:", error);
+      errorMessage.classList.add("show");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Submit Entry";
+    }
+  });
+</script>
+
+</body>
+</html>

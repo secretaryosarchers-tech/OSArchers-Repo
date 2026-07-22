@@ -1,0 +1,814 @@
+﻿﻿/* ============================================================
+   IMPERIAL CHALLENGE 2026 - MASTER STYLESHEET
+   Ordnance Survey Archers
+   ============================================================ */
+
+  /* ============================================================
+     GLOBAL RESET & BASE STYLES
+     ============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #4a5c8c 0%, #3d4d73 100%);
+  min-height: 100vh;
+}
+
+/* ============================================================
+   HEADER & NAVIGATION
+   ============================================================ */
+.header {
+  background: white;
+  padding: 20px 40px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo-container a {
+  display: block;
+}
+
+.logo {
+  height: 80px;
+  width: auto;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links a {
+  color: #4a5c8c;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1em;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover {
+  color: #e91e63;
+}
+
+/* ============================================================
+   CONTAINER & LAYOUT
+   ============================================================ */
+.container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* ============================================================
+   HERO SECTION
+   ============================================================ */
+.hero {
+  background: white;
+  border-radius: 20px;
+  padding: 60px 40px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  margin-bottom: 40px;
+}
+
+.hero h1 {
+  color: #4a5c8c;
+  font-size: 3em;
+  margin-bottom: 20px;
+}
+
+.hero .subtitle {
+  color: #e91e63;
+  font-size: 1.5em;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.dates {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+.dates strong {
+  color: #4a5c8c;
+}
+
+/* ============================================================
+   CONTENT SECTIONS
+   ============================================================ */
+.content-section {
+  background: white;
+  border-radius: 15px;
+  padding: 40px;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.content-section h2 {
+  color: #4a5c8c;
+  font-size: 2em;
+  margin-bottom: 20px;
+  border-bottom: 3px solid #e91e63;
+  padding-bottom: 10px;
+}
+
+.content-section p {
+  color: #555;
+  line-height: 1.8;
+  font-size: 1.1em;
+  margin-bottom: 15px;
+}
+
+/* ============================================================
+   COUNTDOWN TIMERS
+   ============================================================ */
+.countdown-container {
+  margin: 40px 0;
+}
+
+.countdown-title {
+  font-size: 2em;
+  color: white;
+  margin-bottom: 30px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.countdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.countdown-item {
+  background: linear-gradient(135deg, #00ff40 0%, #00ff40 100%);
+  padding: 30px 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(44, 90, 160, 0.3);
+  transition: transform 0.3s;
+}
+
+.countdown_En-item {
+  background: linear-gradient(135deg, #ffbf00 0%, #ffbf00 100%);
+  padding: 30px 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(44, 90, 160, 0.3);
+  transition: transform 0.3s;
+}
+
+.countdown-item:hover,
+.countdown_En-item:hover {
+  transform: translateY(-5px);
+}
+
+.countdown-number {
+  font-size: 3.5em;
+  font-weight: bold;
+  color: white;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.countdown-label {
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ============================================================
+   PRICING BOX
+   ============================================================ */
+.pricing-box {
+  background: #e7f3ff;
+  border-left: 4px solid #4a5c8c;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 5px;
+}
+
+.pricing-box p {
+  margin-bottom: 10px;
+}
+
+.pricing-box strong {
+  color: #4a5c8c;
+  font-size: 1.2em;
+}
+
+/* ============================================================
+   MEDALS SHOWCASE
+   ============================================================ */
+.medals-showcase {
+  background: white;
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.medals-showcase h2 {
+  color: #4a5c8c;
+  font-size: 2em;
+  margin-bottom: 30px;
+}
+
+.medals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.medal-item {
+  text-align: center;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  transition: transform 0.3s;
+}
+
+.medal-item:hover {
+  transform: translateY(-5px);
+}
+
+.medal-item img {
+  max-width: 200px;
+  height: auto;
+  margin-bottom: 15px;
+}
+
+.medal-item h3 {
+  color: #4a5c8c;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.medal-item p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.gold {
+  border-top: 4px solid #FFD700;
+}
+
+.silver {
+  border-top: 4px solid #C0C0C0;
+}
+
+.bronze {
+  border-top: 4px solid #CD7F32;
+}
+
+.pin {
+  border-top: 4px solid #e91e63;
+}
+
+.all-medals {
+  margin-top: 40px;
+}
+
+.all-medals img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================================
+   TIER BADGES
+   ============================================================ */
+.tier-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  margin: 5px;
+  font-size: 0.9em;
+}
+
+.tier-badge.gold {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: white;
+}
+
+.tier-badge.silver {
+  background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
+  color: white;
+}
+
+.tier-badge.bronze {
+  background: linear-gradient(135deg, #CD7F32 0%, #B8722C 100%);
+  color: white;
+}
+
+/* ============================================================
+   CALL-TO-ACTION SECTION
+   ============================================================ */
+.cta-section {
+  background: linear-gradient(135deg, #4a5c8c 0%, #e91e63 100%);
+  border-radius: 15px;
+  padding: 50px 40px;
+  text-align: center;
+  color: white;
+  margin-top: 40px;
+}
+
+.cta-section h2 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.cta-section p {
+  font-size: 1.2em;
+  margin-bottom: 30px;
+}
+
+.button-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-button {
+  display: inline-block;
+  background: white;
+  color: #4a5c8c;
+  padding: 15px 40px;
+  font-size: 1.2em;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 50px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: none;
+  cursor: pointer;
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.cta-button.secondary {
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+}
+
+/* ============================================================
+   DETAIL CARDS
+   ============================================================ */
+.details-section {
+  background: #f8f9fa;
+  padding: 40px;
+  border-radius: 10px;
+  margin-top: 40px;
+}
+
+.details-section h3 {
+  color: #4a5c8c;
+  font-size: 1.8em;
+  margin-bottom: 20px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.detail-card {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  border-left: 4px solid #e91e63;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.detail-card-left {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  border-left: 4px solid #e91e63;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.detail-card h4 {
+  color: #2c5aa0;
+  font-size: 1.3em;
+  margin-bottom: 10px;
+}
+
+.detail-card p {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 1em;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1em;
+  font-family: inherit;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #4a5c8c;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.submit-button,
+.btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #4a5c8c 0%, #e91e63 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.2em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.submit-button:hover,
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(74, 92, 140, 0.3);
+}
+
+.submit-button:disabled,
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ============================================================
+   STATUS MESSAGES
+   ============================================================ */
+.status-message,
+.message {
+  display: none;
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 20px;
+  text-align: center;
+  border: 2px solid transparent;
+}
+
+.status-message.show,
+.message.show {
+  display: block;
+}
+
+.status-message.success,
+.message.success {
+  background: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.status-message.error,
+.message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+.status-message.info,
+.message.info {
+  background: #e3f2fd;
+  color: #1565c0;
+  border-color: #90caf9;
+}
+
+/* ============================================================
+   LINKS
+   ============================================================ */
+.agb-link {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.agb-link a {
+  color: #4a5c8c;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1.1em;
+}
+
+.agb-link a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   IMPERIAL ROUNDS TABLE - SPECIFIC STYLES
+   ============================================================ */
+.legend {
+  background: #e3f2fd;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border-left: 4px solid #2c5aa0;
+}
+
+.legend h3 {
+  color: #2c5aa0;
+  margin-bottom: 15px;
+  font-size: 1.5em;
+}
+
+.legend-items {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-box {
+  width: 30px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.legend-box.gold {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+}
+
+.legend-box.silver {
+  background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
+}
+
+.legend-box.bronze {
+  background: linear-gradient(135deg, #CD7F32 0%, #B8722C 100%);
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: white;
+  max-height: 70vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+thead {
+  background: linear-gradient(135deg, #2c5aa0 0%, #1e3c72 100%);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+th {
+  padding: 15px 10px;
+  text-align: center;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.95em;
+  background: linear-gradient(135deg, #2c5aa0 0%, #1e3c72 100%);
+}
+
+th:first-child {
+  text-align: left;
+  padding-left: 20px;
+}
+
+tbody tr {
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.2s;
+}
+
+tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+td {
+  padding: 12px 10px;
+  text-align: center;
+  border: 1px solid #e0e0e0;
+  font-size: 0.9em;
+}
+
+td:first-child {
+  text-align: left;
+  padding-left: 20px;
+  font-weight: 600;
+  color: #1e3c72;
+}
+
+/* Highlight Imperial Challenge rounds */
+.gold-tier {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 165, 0, 0.15) 100%);
+}
+
+.gold-tier td:first-child {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: white;
+  font-weight: bold;
+}
+
+.silver-tier {
+  background: linear-gradient(135deg, rgba(192, 192, 192, 0.15) 0%, rgba(168, 168, 168, 0.15) 100%);
+}
+
+.silver-tier td:first-child {
+  background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
+  color: white;
+  font-weight: bold;
+}
+
+.bronze-tier {
+  background: linear-gradient(135deg, rgba(205, 127, 50, 0.15) 0%, rgba(184, 114, 44, 0.15) 100%);
+}
+
+.bronze-tier td:first-child {
+  background: linear-gradient(135deg, #CD7F32 0%, #B8722C 100%);
+  color: white;
+  font-weight: bold;
+}
+
+/* Empty cells */
+.empty-cell {
+  color: #ccc;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  text-align: center;
+  color: white;
+  padding: 30px 20px;
+  margin-top: 40px;
+}
+
+.footer a {
+  color: white;
+  text-decoration: underline;
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN - MOBILE/TABLET
+   ============================================================ */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 2em;
+  }
+
+  .hero .subtitle {
+    font-size: 1.2em;
+  }
+
+  .medals-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .button-group {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .countdown {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .countdown-number {
+    font-size: 2.5em;
+  }
+
+  .countdown-title {
+    font-size: 1.5em;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .entry-card,
+  .content-section {
+    padding: 30px 20px;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Imperial Rounds Table Mobile */
+  .legend-items {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  th, td {
+    padding: 8px 5px;
+    font-size: 0.8em;
+  }
+
+  th:first-child,
+  td:first-child {
+    padding-left: 10px;
+  }
+
+  .table-wrapper {
+    max-height: 60vh;
+  }
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+.text-center {
+  text-align: center;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.mb-30 {
+  margin-bottom: 30px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mt-30 {
+  margin-top: 30px;
+}
+
+.required {
+  color: #dc3545;
+}
