@@ -130,6 +130,32 @@
       line-height: 1.4;
     }
 
+    .popup-link {
+      margin-top: 0.35rem;
+      font-size: 0.78rem;
+    }
+
+    .popup-link a {
+      color: #4a5c8c;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .popup-link a:hover { text-decoration: underline; }
+
+    .pending-search {
+      margin: 0.2rem 0 0;
+      font-size: 0.74rem;
+    }
+
+    .pending-search a {
+      color: #4a5c8c;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .pending-search a:hover { text-decoration: underline; }
+
     .target-marker {
       width: 30px;
       height: 30px;
@@ -279,33 +305,37 @@
   const db = getFirestore(app);
 
   const STATIC_CLUBS = [
-    { name: "OS Archers", venue: "Ordnance Survey Archers", address: "Adanac Dr, Nursling, Southampton SO16 0AS", lat: 50.9378972, lng: -1.4692141 },
-    { name: "Southampton Archery Club", venue: "Hardmoor Sports Ground", address: "Stoneham Lane, Eastleigh SO50 9HT", lat: 50.9505396, lng: -1.3823891 },
-    { name: "Overton Black Arrows", venue: "Overton Black Arrows", address: "Laverstoke, Whitchurch RG28 7NY", lat: 51.2328620, lng: -1.2991839 },
-    { name: "Waterside Archers", venue: "Exbury Range", address: "Summer Ln, Southampton SO45 1AZ", lat: 50.8071124, lng: -1.4026624 },
-    { name: "Southend District", venue: "Southend and District Archery Club", address: "Clements Hall Way, Hawkwell, Hockley SS5 4LN", lat: 51.5946757, lng: 0.6721935 },
-    { name: "Kirton in Lindsey", venue: "Kirton In Lindsey Archery Club", address: "KLASSIC Park Fields, Ings Rd, Kirton in Lindsey, Gainsborough DN21 4BX", lat: 53.4769300, lng: -0.6034990 },
-    { name: "Devizes Bowmen", venue: "Devizes Bowmen", address: "Green Lane Playing Fields, Devizes SN10 5DS", lat: 51.3367558, lng: -1.9818091 },
-    { name: "Brent Valley Archers / Rickmansworth Archery Club", venue: "Brent Valley Archers", address: "Perivale Community Centre, Horsenden Ln S, Greenford UB6 7NP", lat: 51.5410685, lng: -0.3251656 },
-    { name: "Andover Archers", venue: "Andover Archery Club", address: "Foxcotte Ln, Andover SP11 0TA", lat: 51.2328354, lng: -1.4991081 },
-    { name: "Forest of Bere Bowmen", venue: "Forest of Bere Archery", address: "Blendworth Ln, Horndean, Waterlooville PO8 0DG", lat: 50.9122665, lng: -0.9905347 },
-    { name: "Bowmen of Guernsey", venue: "Bowmen of Guernsey", address: "Guernsey GY6", lat: 49.4853232, lng: -2.5818153 },
-    { name: "Bath Archers", venue: "Bath Archers", address: "London Rd W, Bath BA1 7DD", lat: 51.4001545, lng: -2.3286524 },
-    { name: "Talisman Bowmen", venue: "Talisman Bowmen Outdoor Range", address: "345b Hunts Pond Rd, Park Gate, Fareham PO14 4PD", lat: 50.8539060, lng: -1.2526140 },
-    { name: "Evesham Archery Club", venue: "Evesham Archery Club", address: "Brewers Ln, Badsey, Evesham WR11 7EU", lat: 52.0891132, lng: -1.8891031 },
-    { name: "Perth Archery Club", venue: "Doo'cot Park (outdoor range)", address: "Pitcullen Cres, Perth PH2 7HU", lat: 56.4065723, lng: -3.4210769 },
-    { name: "Clophill Archery Club", venue: "Clophill Archery Club", address: "Clophill, Bedford MK45 4DA", lat: 52.0321026, lng: -0.4204501 },
-    { name: "Towcester Archers", venue: "Towcester Archers", address: "Greens, Norton Road, Towcester NN12 8AW", lat: 52.1415246, lng: -1.0063796 },
-    { name: "Bowmen of Lytchett", venue: "The Bowmen Of Lytchett Archery Club", address: "Worgret Rd, Wareham BH20 4PH", lat: 50.6818963, lng: -2.1215863 },
-    { name: "Stalybridge Archery Club", venue: "Stalybridge Archery Club", address: "Mottram Rd, Stalybridge SK15 2QS", lat: 53.4779847, lng: -2.0448142 },
-    { name: "Ham and Petersham", venue: "Ham & Petersham Rifle & Pistol Club", address: "The Ranges, Ham St, Richmond TW10 7RT", lat: 51.4431587, lng: -0.3210282 },
-    { name: "Abbeydale Archers", venue: "De La Salle Association", address: "Beauchief Abbey Lane, Sheffield S8 7BA", lat: 53.3289623, lng: -1.5039113 },
-    { name: "Ebor Archers", venue: "York RI Sports Ground", address: "New Lane, Holgate, York", lat: 53.9536612, lng: -1.1106501 },
-    { name: "Phoenix Bowmen", venue: "Old Rishworthians RUFC", address: "Copley, Halifax HX3 0UG", lat: 53.7127937, lng: -1.8875221 },
-    { name: "The Valley Bowmen of Huddersfield", venue: "Knowle Lane Ground", address: "Knowle Lane, Meltham, Huddersfield HD9 4HL", lat: 53.5917295, lng: -1.8370815 },
-    { name: "Nethermoss Archers", venue: "Hurlston Hall", address: "Hurlston Lane, Scarisbrick, Ormskirk L40 8HB", lat: 53.5884225, lng: -2.9039879 },
-    { name: "Bowbearers of Wyresdale", venue: "Wyresdale Park", address: "Snowhill Lane, Scorton, Preston PR3 1BA", lat: 53.9331679, lng: -2.7600726 },
-    { name: "Yeo Bowmen", venue: "Johnson Park (Yeovil Sports & Social Club)", address: "Coronation Avenue, Yeovil, Somerset BA21 3DX", lat: 50.9522634, lng: -2.6486018 }
+    { name: "OS Archers", venue: "Ordnance Survey Archers", address: "Adanac Dr, Nursling, Southampton SO16 0AS", lat: 50.9378972, lng: -1.4692141, website: "https://www.osarchers.co.uk/" },
+    { name: "Southampton Archery Club", venue: "Hardmoor Sports Ground", address: "Stoneham Lane, Eastleigh SO50 9HT", lat: 50.9505396, lng: -1.3823891, website: "https://www.southamptonarcheryclub.org/" },
+    { name: "Overton Black Arrows", venue: "Overton Black Arrows", address: "Laverstoke, Whitchurch RG28 7NY", lat: 51.2328620, lng: -1.2991839, website: "https://www.overtonblackarrows.org/" },
+    { name: "Waterside Archers", venue: "Exbury Range", address: "Summer Ln, Southampton SO45 1AZ", lat: 50.8071124, lng: -1.4026624, website: "https://www.watersidearchers.co.uk" },
+    { name: "Southend District", venue: "Southend and District Archery Club", address: "Clements Hall Way, Hawkwell, Hockley SS5 4LN", lat: 51.5946757, lng: 0.6721935, website: "https://southendanddistrictarchery.co.uk/" },
+    { name: "Kirton in Lindsey", venue: "Kirton In Lindsey Archery Club", address: "KLASSIC Park Fields, Ings Rd, Kirton in Lindsey, Gainsborough DN21 4BX", lat: 53.4769300, lng: -0.6034990, website: "https://klac.co.uk/" },
+    { name: "Devizes Bowmen", venue: "Devizes Bowmen", address: "Green Lane Playing Fields, Devizes SN10 5DS", lat: 51.3367558, lng: -1.9818091, website: "https://www.devizes-bowmen.co.uk/" },
+    { name: "Brent Valley Archers / Rickmansworth Archery Club", venue: "Brent Valley Archers", address: "Perivale Community Centre, Horsenden Ln S, Greenford UB6 7NP", lat: 51.5410685, lng: -0.3251656, website: "https://brentvalleyarchers.co.uk/" },
+    { name: "Andover Archers", venue: "Andover Archery Club", address: "Foxcotte Ln, Andover SP11 0TA", lat: 51.2328354, lng: -1.4991081, website: "https://andoverarchers.org/" },
+    { name: "Forest of Bere Bowmen", venue: "Forest of Bere Archery", address: "Blendworth Ln, Horndean, Waterlooville PO8 0DG", lat: 50.9122665, lng: -0.9905347, website: "https://www.fobb.uk/" },
+    { name: "Bowmen of Guernsey", venue: "Bowmen of Guernsey", address: "Guernsey GY6", lat: 49.4853232, lng: -2.5818153, website: "https://www.bowmenofguernsey.co.uk/" },
+    { name: "Bath Archers", venue: "Bath Archers", address: "London Rd W, Bath BA1 7DD", lat: 51.4001545, lng: -2.3286524, website: "https://batharchers.org/" },
+    { name: "Talisman Bowmen", venue: "Talisman Bowmen Outdoor Range", address: "345b Hunts Pond Rd, Park Gate, Fareham PO14 4PD", lat: 50.8539060, lng: -1.2526140, website: "https://talismanbowmen.com/" },
+    { name: "Evesham Archery Club", venue: "Evesham Archery Club", address: "Brewers Ln, Badsey, Evesham WR11 7EU", lat: 52.0891132, lng: -1.8891031, website: "https://www.eveshamarcheryclub.com/" },
+    { name: "Perth Archery Club", venue: "Doo'cot Park (outdoor range)", address: "Pitcullen Cres, Perth PH2 7HU", lat: 56.4065723, lng: -3.4210769, website: "https://pertharcheryclub.org/" },
+    { name: "Clophill Archery Club", venue: "Clophill Archery Club", address: "Clophill, Bedford MK45 4DA", lat: 52.0321026, lng: -0.4204501, website: "https://clophillac.co.uk/" },
+    { name: "Towcester Archers", venue: "Towcester Archers", address: "Greens, Norton Road, Towcester NN12 8AW", lat: 52.1415246, lng: -1.0063796, website: "https://towcesterarchers.co.uk/" },
+    { name: "Bowmen of Lytchett", venue: "The Bowmen Of Lytchett Archery Club", address: "Worgret Rd, Wareham BH20 4PH", lat: 50.6818963, lng: -2.1215863, website: "https://bowmenoflytchett.co.uk/" },
+    { name: "Stalybridge Archery Club", venue: "Stalybridge Archery Club", address: "Mottram Rd, Stalybridge SK15 2QS", lat: 53.4779847, lng: -2.0448142, website: "https://www.stalybridgearcheryclub.uk/" },
+    { name: "Ham and Petersham", venue: "Ham & Petersham Rifle & Pistol Club", address: "The Ranges, Ham St, Richmond TW10 7RT", lat: 51.4431587, lng: -0.3210282, website: "https://www.hprpc.co.uk/disciplines/archery/reference" },
+    { name: "Abbeydale Archers", venue: "De La Salle Association", address: "Beauchief Abbey Lane, Sheffield S8 7BA", lat: 53.3289623, lng: -1.5039113, website: "https://abbeydalearchers.com/" },
+    { name: "Ebor Archers", venue: "York RI Sports Ground", address: "New Lane, Holgate, York", lat: 53.9536612, lng: -1.1106501, website: "https://www.eborarchers.com/" },
+    { name: "Phoenix Bowmen", venue: "Old Rishworthians RUFC", address: "Copley, Halifax HX3 0UG", lat: 53.7127937, lng: -1.8875221, website: "https://www.phoenixbowmen.co.uk/" },
+    { name: "The Valley Bowmen of Huddersfield", venue: "Knowle Lane Ground", address: "Knowle Lane, Meltham, Huddersfield HD9 4HL", lat: 53.5917295, lng: -1.8370815, website: "https://valleybowmen.co.uk/" },
+    { name: "Nethermoss Archers", venue: "Hurlston Hall", address: "Hurlston Lane, Scarisbrick, Ormskirk L40 8HB", lat: 53.5884225, lng: -2.9039879, website: "https://www.nethermoss.co.uk/" },
+    { name: "Bowbearers of Wyresdale", venue: "Wyresdale Park", address: "Snowhill Lane, Scorton, Preston PR3 1BA", lat: 53.9331679, lng: -2.7600726, website: "https://bowbearers.co.uk/" },
+    { name: "Yeo Bowmen", venue: "Johnson Park (Yeovil Sports & Social Club)", address: "Coronation Avenue, Yeovil, Somerset BA21 3DX", lat: 50.9522634, lng: -2.6486018, website: "https://yeobowmen.co.uk/" },
+    { name: "Bannockburn Bowmen", venue: "Strathallan Games Park", address: "Pullar Ave, Bridge of Allan, Stirling FK9 4SR", lat: 56.1479800, lng: -3.9414300, website: "https://www.bannockburnbowmen.org/" },
+    { name: "Blundellsands Archers", venue: "Merchant Taylors School playing fields", address: "Liverpool Road, Great Crosby, Crosby, Liverpool L23 5SP", lat: 53.4895733, lng: -3.0252022, website: "https://blundellsandsarchers.uk/" },
+    { name: "Coastal Archers", venue: "RM Playing Fields", address: "Cossington, Somerset TA7 8LZ", lat: 51.1599600, lng: -2.9285700, website: "https://coastalarchers.co.uk/" },
+    { name: "Rugby Archers", venue: "Rugby Thornfield Indoor Bowls Club", address: "Bruce Williams Way, Rugby CV22 5LZ", lat: 52.3651600, lng: -1.2517500, website: "https://rugbyarchers.co.uk/" }
   ];
 
   // Known spelling/casing variants seen in registrations, mapped to the
@@ -381,7 +411,7 @@
     const marker = L.marker([club.lat, club.lng], { icon: targetIcon(false, club.auto) });
     marker.bindPopup(
       `<div class="popup-name">${club.name}</div>
-       <div class="popup-addr">${club.venue}<br>${club.address}</div>${club.auto ? '<div class="popup-auto">📍 Location approximate — auto-detected from registration</div>' : ''}`
+       <div class="popup-addr">${club.venue}<br>${club.address}</div>${club.website ? `<div class="popup-link"><a href="${club.website}" target="_blank" rel="noopener noreferrer">Club website ↗</a></div>` : ''}${club.auto ? '<div class="popup-auto">📍 Location approximate — auto-detected from registration</div>' : ''}`
     );
     markers.push(marker);
     clusterGroup.addLayer(marker);
@@ -404,6 +434,7 @@
   }
 
   function addPendingClub(name) {
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(name + ' archery club UK')}`;
     const li = document.createElement('li');
     li.className = 'club-item pending';
     li.innerHTML = `
@@ -411,6 +442,7 @@
       <div>
         <p class="club-name">${name}</p>
         <p class="club-addr">Location not yet mapped</p>
+        <p class="pending-search"><a href="${searchUrl}" target="_blank" rel="noopener noreferrer">Search for this club ↗</a></p>
       </div>`;
     listEl.appendChild(li);
   }
@@ -449,19 +481,32 @@
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  // A bare club name can spuriously match an unrelated OSM feature that just
+  // happens to share words with it (e.g. "Rugby archers" once matched a
+  // residential street called "Archers Spinney"). These classes are geographic
+  // features, never a sports venue, so treat a top hit in one of them as no match.
+  const REJECTED_OSM_CLASSES = new Set(['highway', 'boundary', 'railway', 'waterway', 'natural']);
+
   // Free-text club names don't come with a venue address, so new clubs
   // are geocoded by name via Nominatim. Results are cached in localStorage
   // (keyed per browser) so repeat visits don't re-query, and lookups are
   // spaced out to stay under Nominatim's ~1 request/second usage policy.
   async function nominatimSearch(q) {
-    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=gb,je,gg,im&q=${encodeURIComponent(q)}`;
+    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=gb,je,gg,im&extratags=1&q=${encodeURIComponent(q)}`;
     const response = await fetch(url);
     const results = await response.json();
-    return results[0] ? { lat: parseFloat(results[0].lat), lng: parseFloat(results[0].lon) } : null;
+    const top = results[0];
+    if (!top || REJECTED_OSM_CLASSES.has(top.class)) return null;
+    const extratags = top.extratags || {};
+    return {
+      lat: parseFloat(top.lat),
+      lng: parseFloat(top.lon),
+      website: extratags.website || extratags['contact:website'] || null
+    };
   }
 
   async function geocodeClub(name) {
-    const cacheKey = 'clubGeo:' + normalize(name);
+    const cacheKey = 'clubGeo3:' + normalize(name);
     const cached = localStorage.getItem(cacheKey);
     if (cached !== null) return JSON.parse(cached);
 
@@ -493,6 +538,8 @@
         if (name) rawNames.add(name);
       });
 
+      const pendingSeen = new Set();
+
       for (const rawName of rawNames) {
         if (resolveKnownClub(rawName)) continue;
 
@@ -504,10 +551,15 @@
             address: 'Location approximate — from club registration',
             lat: coords.lat,
             lng: coords.lng,
+            website: coords.website,
             auto: true
           });
         } else {
-          addPendingClub(rawName);
+          const key = normalize(rawName);
+          if (!pendingSeen.has(key)) {
+            pendingSeen.add(key);
+            addPendingClub(rawName);
+          }
         }
         await sleep(1100);
       }
