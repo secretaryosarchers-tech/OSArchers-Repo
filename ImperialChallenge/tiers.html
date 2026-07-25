@@ -75,6 +75,22 @@
     .summary-card.silver .s-value { color: #909090; }
     .summary-card.bronze .s-value { color: #CD7F32; }
 
+    /* ---- Achievements ---- */
+    .achievement-section { margin-bottom: 28px; }
+    .achievement-title {
+      font-size: 0.95em;
+      font-weight: 700;
+      color: #4a5c8c;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin: 0 0 4px 2px;
+    }
+    .achievement-note {
+      font-size: 0.82em;
+      color: #888;
+      margin: 0 0 12px 2px;
+    }
+
     /* ---- Tier sections ---- */
     .tier-section {
       background: white;
@@ -289,6 +305,30 @@
       </div>
     </div>
 
+    <!-- Pin badges & medal totals -->
+    <div class="achievement-section">
+      <div class="achievement-title">Pin Badges &amp; Medal Totals</div>
+      <div class="achievement-note">Pin badge = at least 3 rounds logged (each archer counted once). Medals = 6 rounds shot at that tier; an archer is only counted at their highest complete tier (Gold beats Silver beats Bronze).</div>
+      <div class="summary-bar">
+        <div class="summary-card total">
+          <div class="s-label">Pin Badges</div>
+          <div class="s-value" id="sumPinBadges">0</div>
+        </div>
+        <div class="summary-card gold">
+          <div class="s-label">Gold Medals</div>
+          <div class="s-value" id="sumMedalGold">0</div>
+        </div>
+        <div class="summary-card silver">
+          <div class="s-label">Silver Medals</div>
+          <div class="s-value" id="sumMedalSilver">0</div>
+        </div>
+        <div class="summary-card bronze">
+          <div class="s-label">Bronze Medals</div>
+          <div class="s-value" id="sumMedalBronze">0</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Filters -->
     <div class="filter-bar">
       <div class="filter-group">
@@ -498,6 +538,42 @@
     renderTier('gold',   'Gold',   ga);
     renderTier('silver', 'Silver', sa);
     renderTier('bronze', 'Bronze', ba);
+
+    renderAchievements(filtered);
+  }
+
+  // ---- Pin badges (>=3 rounds, deduped per archer) & medal totals (6 rounds, highest tier only) ----
+  const TIER_RANK = ['Gold', 'Silver', 'Bronze'];
+
+  function renderAchievements(scores) {
+    const archers = new Map();
+    scores.forEach(s => {
+      const key = (s.agbNumber || s.archerName || '').trim().toLowerCase();
+      if (!key) return;
+      if (!archers.has(key)) archers.set(key, { Gold: {}, Silver: {}, Bronze: {} });
+      const tiers = archers.get(key);
+      if (!tiers[s.tier]) tiers[s.tier] = {};
+      const existing = tiers[s.tier][s.round];
+      if (existing === undefined || s.totalScore > existing) {
+        tiers[s.tier][s.round] = s.totalScore;
+      }
+    });
+
+    let pinBadges = 0;
+    const medals = { Gold: 0, Silver: 0, Bronze: 0 };
+
+    archers.forEach(tiers => {
+      const totalRounds = TIER_RANK.reduce((sum, t) => sum + Object.keys(tiers[t]).length, 0);
+      if (totalRounds >= 3) pinBadges++;
+
+      const highestComplete = TIER_RANK.find(t => Object.keys(tiers[t]).length >= (ROUNDS[t] ? ROUNDS[t].length : 6));
+      if (highestComplete) medals[highestComplete]++;
+    });
+
+    document.getElementById('sumPinBadges').textContent  = pinBadges;
+    document.getElementById('sumMedalGold').textContent   = medals.Gold;
+    document.getElementById('sumMedalSilver').textContent = medals.Silver;
+    document.getElementById('sumMedalBronze').textContent = medals.Bronze;
   }
 
   function renderTier(tierKey, tierLabel, archers) {
