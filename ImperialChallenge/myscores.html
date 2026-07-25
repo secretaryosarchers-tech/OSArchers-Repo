@@ -65,11 +65,34 @@
     .summary-label { display: block; font-size: 0.78em; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
     .summary-value { display: block; font-size: 1.6em; font-weight: 800; color: #4a5c8c; }
 
+    .reveal-bar {
+      background: white;
+      border-radius: 15px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .reveal-warning {
+      display: inline-block;
+      background: #FFF3CD;
+      color: #8a6d00;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.88em;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+    .reveal-bar .btn { width: auto; padding: 10px 26px; }
+
     .scores-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 18px;
     }
+
+    .position-badge { display: none; }
+    .scores-grid.positions-revealed .position-badge { display: inline-flex; }
 
     .score-card {
       background: white;
@@ -182,6 +205,13 @@
         </div>
       </div>
 
+      <div id="revealBar" class="reveal-bar" style="display:none;">
+        <p class="reveal-warning">This is just for your own information and in no way used by the club for anything.</p>
+        <div>
+          <button type="button" class="btn" id="revealPositionBtn">Show My Position</button>
+        </div>
+      </div>
+
       <div id="scoresGrid" class="scores-grid"></div>
 
       <div id="noResults" class="no-results" style="display: none;">
@@ -208,6 +238,20 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+
+  let positionsRevealed = false;
+
+  function resetReveal() {
+    positionsRevealed = false;
+    document.getElementById('scoresGrid').classList.remove('positions-revealed');
+    document.getElementById('revealPositionBtn').textContent = 'Show My Position';
+  }
+
+  document.getElementById('revealPositionBtn').addEventListener('click', () => {
+    positionsRevealed = !positionsRevealed;
+    document.getElementById('scoresGrid').classList.toggle('positions-revealed', positionsRevealed);
+    document.getElementById('revealPositionBtn').textContent = positionsRevealed ? 'Hide My Position' : 'Show My Position';
+  });
 
   function showMessage(message, type) {
     const messageEl = document.getElementById('message');
@@ -341,6 +385,7 @@
     const searchBtn = document.getElementById('searchBtn');
     const loadingSection = document.getElementById('loadingSection');
     const resultsSection = document.getElementById('resultsSection');
+    const revealBar = document.getElementById('revealBar');
     const scoresGrid = document.getElementById('scoresGrid');
     const noResults = document.getElementById('noResults');
 
@@ -348,6 +393,7 @@
     searchBtn.disabled = true;
     loadingSection.style.display = 'block';
     resultsSection.style.display = 'none';
+    resetReveal();
 
     try {
       // Query Firestore for scores matching the AGB number
@@ -364,6 +410,7 @@
         // No scores found
         loadingSection.style.display = 'none';
         resultsSection.style.display = 'block';
+        revealBar.style.display = 'none';
         scoresGrid.innerHTML = '';
         noResults.style.display = 'block';
         showMessage('No scores found for this AGB number', 'info');
@@ -399,6 +446,7 @@
           return createScoreCard(score, rank);
         }).join('');
         noResults.style.display = 'none';
+        revealBar.style.display = 'block';
 
         // Show results
         loadingSection.style.display = 'none';
