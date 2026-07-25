@@ -8,6 +8,122 @@
   <title>Imperial Challenge - My Scores</title>
   <link rel="stylesheet" href="css/imperial-challenge.css">
 
+  <style>
+    .content { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+
+    .search-section {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .search-form {
+      display: flex;
+      gap: 14px;
+      align-items: flex-end;
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    .search-form .form-group { flex: 1; min-width: 200px; text-align: left; }
+
+    .loading { text-align: center; padding: 50px 20px; color: #888; }
+    .spinner {
+      width: 38px; height: 38px;
+      border: 4px solid #e0e0e0;
+      border-top-color: #4a5c8c;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 18px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .results-section { display: none; }
+
+    .results-header {
+      background: white;
+      border-radius: 15px;
+      padding: 24px 30px;
+      margin-bottom: 24px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    .results-header h2 { color: #1e3c72; margin-bottom: 16px; }
+    .results-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px;
+    }
+    .summary-item {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+    }
+    .summary-label { display: block; font-size: 0.78em; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .summary-value { display: block; font-size: 1.6em; font-weight: 800; color: #4a5c8c; }
+
+    .scores-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .score-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      border-top: 4px solid #ccc;
+    }
+    .score-card.gold   { border-top-color: #DAA520; }
+    .score-card.silver { border-top-color: #A0A0A0; }
+    .score-card.bronze { border-top-color: #CD7F32; }
+
+    .tier-badge {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: 0.75em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 10px;
+    }
+    .tier-badge.gold   { background: #FFF3CD; color: #8a6d00; }
+    .tier-badge.silver { background: #ECECEC; color: #555; }
+    .tier-badge.bronze { background: #F5DFC8; color: #8B4513; }
+
+    .round-name { font-size: 1.15em; font-weight: 700; color: #333; margin-bottom: 4px; }
+    .score-value { font-size: 2em; font-weight: 800; color: #1e3c72; margin-bottom: 6px; }
+
+    .position-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 700;
+      background: #eef1fb;
+      color: #4a5c8c;
+      margin-bottom: 14px;
+    }
+    .position-badge.top3 { background: linear-gradient(135deg, #FFF8DC, #FFF0A0); color: #8a6d00; }
+    .position-badge .medal { font-size: 1.1em; }
+
+    .score-details { display: grid; gap: 8px; }
+    .detail-item { display: flex; justify-content: space-between; font-size: 0.9em; }
+    .detail-label { color: #888; }
+    .detail-value { color: #333; font-weight: 600; }
+
+    .no-results { text-align: center; padding: 50px 20px; color: #888; }
+    .no-results-icon { font-size: 2.4em; margin-bottom: 12px; }
+    .no-results h3 { color: #555; margin-bottom: 8px; }
+  </style>
+
 </head>
 <body>
 <header class="header">
@@ -32,6 +148,7 @@
 
     <div class="search-section">
       <h2 style="margin-bottom: 20px; color: #1e3c72;">Enter Your AGB Number</h2>
+      <p style="color:#666; margin-bottom:20px;">See every round you've shot, your score, and the place you came against archers who match your bow style, gender and age group.</p>
       <form class="search-form" onsubmit="searchScores(event)">
         <div class="form-group">
           <label for="agbNumber">AGB Number</label>
@@ -74,7 +191,6 @@
       </div>
     </div>
   </div>
-</div>
 
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
@@ -129,7 +245,62 @@
     return tier.toLowerCase();
   }
 
-  function createScoreCard(score) {
+  // Keep only the highest score per round for a set of score docs
+  function dedupeBestPerRound(scores) {
+    const map = new Map();
+    scores.forEach(s => {
+      const existing = map.get(s.round);
+      if (!existing || s.totalScore > existing.totalScore) map.set(s.round, s);
+    });
+    return [...map.values()];
+  }
+
+  // Keep only the highest score per archer (AGB number) for a set of score docs
+  function dedupeBestPerArcher(scores) {
+    const map = new Map();
+    scores.forEach(s => {
+      const key = (s.agbNumber || s.archerName || '').trim().toLowerCase();
+      if (!key) return;
+      const existing = map.get(key);
+      if (!existing || s.totalScore > existing.totalScore) map.set(key, s);
+    });
+    return [...map.values()];
+  }
+
+  function ordinal(n) {
+    const rem100 = n % 100;
+    if (rem100 >= 11 && rem100 <= 13) return n + 'th';
+    switch (n % 10) {
+      case 1: return n + 'st';
+      case 2: return n + 'nd';
+      case 3: return n + 'rd';
+      default: return n + 'th';
+    }
+  }
+
+  // Position of `target` among everyone who shot the same round in the same
+  // category (gender/age group) and bow style, using each archer's best score.
+  function computeRank(allScores, target) {
+    const cohort = dedupeBestPerArcher(allScores.filter(s =>
+      s.round === target.round &&
+      s.category === target.category &&
+      s.bowType === target.bowType
+    ));
+    cohort.sort((a, b) => b.totalScore - a.totalScore);
+    const total = cohort.length;
+    const better = cohort.filter(s => s.totalScore > target.totalScore).length;
+    return { position: better + 1, total };
+  }
+
+  function positionBadgeHtml(rank) {
+    if (!rank || !rank.total) return '';
+    const medals = { 1: '&#129351;', 2: '&#129352;', 3: '&#129353;' };
+    const medal = medals[rank.position];
+    const cls = rank.position <= 3 ? 'position-badge top3' : 'position-badge';
+    return `<div class="${cls}">${medal ? `<span class="medal">${medal}</span>` : ''}${ordinal(rank.position)} of ${rank.total}</div>`;
+  }
+
+  function createScoreCard(score, rank) {
     const tierClass = getTierClass(score.tier);
     const date = formatDate(score.timestamp);
 
@@ -138,6 +309,7 @@
                     <div class="tier-badge ${tierClass}">${score.tier || 'N/A'} Tier</div>
                     <div class="round-name">${score.round || 'Unknown Round'}</div>
                     <div class="score-value">${score.totalScore}</div>
+                    ${positionBadgeHtml(rank)}
                     <div class="score-details">
                         <div class="detail-item">
                             <span class="detail-label">Bow Type</span>
@@ -196,14 +368,13 @@
         noResults.style.display = 'block';
         showMessage('No scores found for this AGB number', 'info');
       } else {
-        // Process scores
-        const scores = [];
+        // Process scores - keep only the best submission per round
+        const rawScores = [];
         querySnapshot.forEach((doc) => {
-          scores.push({
-            id: doc.id,
-            ...doc.data()
-          });
+          rawScores.push({ id: doc.id, ...doc.data() });
         });
+        const scores = dedupeBestPerRound(rawScores)
+          .sort((a, b) => (a.round || '').localeCompare(b.round || ''));
 
         // Calculate statistics
         const totalRounds = scores.length;
@@ -216,8 +387,17 @@
         document.getElementById('highestScore').textContent = highestScore;
         document.getElementById('averageScore').textContent = averageScore;
 
+        // Fetch every score so we can work out where this archer placed
+        // in each round against others who match their category/bow style
+        const allSnapshot = await getDocs(scoresRef);
+        const allScores = [];
+        allSnapshot.forEach(doc => allScores.push({ id: doc.id, ...doc.data() }));
+
         // Display score cards
-        scoresGrid.innerHTML = scores.map(score => createScoreCard(score)).join('');
+        scoresGrid.innerHTML = scores.map(score => {
+          const rank = computeRank(allScores, score);
+          return createScoreCard(score, rank);
+        }).join('');
         noResults.style.display = 'none';
 
         // Show results
