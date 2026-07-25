@@ -91,9 +91,6 @@
       gap: 18px;
     }
 
-    .position-badge { display: none; }
-    .scores-grid.positions-revealed .position-badge { display: inline-flex; }
-
     .score-card {
       background: white;
       border-radius: 12px;
@@ -123,7 +120,7 @@
     .score-value { font-size: 2em; font-weight: 800; color: #1e3c72; margin-bottom: 6px; }
 
     .position-badge {
-      display: inline-flex;
+      display: none;
       align-items: center;
       gap: 6px;
       padding: 4px 12px;
@@ -136,6 +133,7 @@
     }
     .position-badge.top3 { background: linear-gradient(135deg, #FFF8DC, #FFF0A0); color: #8a6d00; }
     .position-badge .medal { font-size: 1.1em; }
+    .scores-grid.positions-revealed .position-badge { display: inline-flex; }
 
     .score-details { display: grid; gap: 8px; }
     .detail-item { display: flex; justify-content: space-between; font-size: 0.9em; }
