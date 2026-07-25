@@ -72,6 +72,9 @@
     }
     .round-header h2 { margin: 0; font-size: 1.4em; color: #333652; }
     .round-header .round-count { font-size: 0.85em; color: #777; }
+    .round-header.tier-gold   { background: linear-gradient(135deg, #FFF8DC, #FFF0A0); border-bottom-color: #DAA520; }
+    .round-header.tier-silver { background: linear-gradient(135deg, #F5F5F5, #E8E8E8); border-bottom-color: #A0A0A0; }
+    .round-header.tier-bronze { background: linear-gradient(135deg, #FFF0E6, #FFE0C0); border-bottom-color: #CD7F32; }
 
     .round-body { padding: 8px 28px 24px; }
 
@@ -254,8 +257,22 @@
       <div>Loading results&hellip;</div>
     </div>
 
-    <!-- Rounds render here -->
-    <div id="roundsContainer"></div>
+    <div id="reportContent" style="display:none;">
+
+      <!-- Aggregate leaderboards -->
+      <div class="content-section" style="padding: 24px 28px;">
+        <h2 style="border-bottom:none; margin-bottom:8px; font-size:1.6em;">&#127942; Tier Leaderboards &mdash; Total of All Rounds Shot</h2>
+        <p style="margin-bottom:0;">Ranked by the sum of every round score logged within each tier. An archer who has shot rounds in more than one tier appears in each tier's table with their aggregate for that tier. Only the Gender / Age Group / Bow Style filters apply here &mdash; the Round filter above only affects the round-by-round results below.</p>
+      </div>
+      <div id="aggregateContainer"></div>
+
+      <!-- Round-by-round results -->
+      <div class="content-section" style="padding: 24px 28px; margin-top: 8px;">
+        <h2 style="border-bottom:none; margin-bottom:0; font-size:1.6em;">Round-by-Round Results</h2>
+      </div>
+      <div id="roundsContainer"></div>
+
+    </div>
 
   </div><!-- /resultsContent -->
 </div>
@@ -283,6 +300,8 @@
   // Preferred display order; anything else discovered in the data is appended alphabetically
   const BOW_ORDER = ['Recurve', 'Compound', 'Barebow', 'Longbow', 'Traditional'];
   const CATEGORY_ORDER = ['Gent', 'Lady', 'Junior Gent', 'Junior Lady'];
+  const TIER_ORDER = ['Gold', 'Silver', 'Bronze'];
+  const TIER_ICON = { Gold: '&#127941;', Silver: '&#129352;', Bronze: '&#129353;' };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
@@ -313,6 +332,7 @@
       allScores = [];
       snap.forEach(doc => allScores.push({ id: doc.id, ...doc.data() }));
       document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('reportContent').style.display = 'block';
       populateRoundFilter();
       wireFilters();
       renderAll();
@@ -352,11 +372,16 @@
 
   function getFiltered() {
     const round = document.getElementById('filterRound').value;
+    return getFilteredIgnoringRound().filter(s => !round || s.round === round);
+  }
+
+  // Gender / Age Group / Bow Style only - used by the aggregate tier tables,
+  // which span every round so the Round filter doesn't apply to them.
+  function getFilteredIgnoringRound() {
     const gender = document.getElementById('filterGender').value;
     const ageGroup = document.getElementById('filterAgeGroup').value;
     const bow = document.getElementById('filterBow').value;
     return allScores.filter(s => {
-      if (round && s.round !== round) return false;
       if (gender && genderOf(s.category) !== gender) return false;
       if (ageGroup && ageGroupOf(s.category) !== ageGroup) return false;
       if (bow && s.bowType !== bow) return false;
@@ -382,14 +407,14 @@
   }
 
   // ---- Group: category (bow + gender/age) -> ranked entries ----
-  function groupByCategory(entries) {
+  function groupByCategory(entries, scoreOf) {
     const cats = new Map();
     entries.forEach(s => {
       const catKey = (s.category || 'Unknown') + '|' + (s.bowType || 'Unknown');
       if (!cats.has(catKey)) cats.set(catKey, []);
       cats.get(catKey).push(s);
     });
-    cats.forEach(list => list.sort((a, b) => b.totalScore - a.totalScore));
+    cats.forEach(list => list.sort((a, b) => scoreOf(b) - scoreOf(a)));
     return cats;
   }
 
@@ -398,8 +423,128 @@
     return i === -1 ? arr.length : i;
   }
 
+  function sortedCategoryKeys(cats) {
+    return [...cats.keys()].sort((a, b) => {
+      const [catA, bowA] = a.split('|');
+      const [catB, bowB] = b.split('|');
+      const bi = sortIndex(BOW_ORDER, bowA) - sortIndex(BOW_ORDER, bowB);
+      if (bi !== 0) return bi;
+      return sortIndex(CATEGORY_ORDER, catA) - sortIndex(CATEGORY_ORDER, catB);
+    });
+  }
+
+  // Renders one card per category (bow style + gender/age group): a podium
+  // for the top 3 (scoreOf) plus a ranked table for the rest. Used for both
+  // single-round results and tier aggregates.
+  function buildCategoryBlocksHtml(entries, opts) {
+    const cats = groupByCategory(entries, opts.scoreOf);
+    const catKeys = sortedCategoryKeys(cats);
+    const medals = ['&#129351;', '&#129352;', '&#129353;'];
+    const rankClasses = ['rank1', 'rank2', 'rank3'];
+    const scoreLabel = opts.scoreLabel || 'Score';
+
+    return catKeys.map(catKey => {
+      const [category, bowType] = catKey.split('|');
+      const list = cats.get(catKey);
+      const top3 = list.slice(0, 3);
+      const rest = list.slice(3);
+
+      const podiumHtml = top3.map((s, idx) => `
+        <div class="podium-card ${rankClasses[idx]}">
+          <span class="podium-medal">${medals[idx]}</span>
+          <span class="podium-info">
+            <div class="podium-name">${esc(s.archerName)}</div>
+            <div class="podium-club">${esc(opts.clubOf(s))}${opts.extraOf ? ' &middot; ' + esc(opts.extraOf(s)) : ''}</div>
+          </span>
+          <span class="podium-score">${opts.scoreOf(s)}</span>
+        </div>`).join('');
+
+      const restHtml = rest.length ? `
+        <table class="rest-table">
+          <thead><tr><th>#</th><th>Name</th><th>Club</th>${opts.extraLabel ? `<th>${esc(opts.extraLabel)}</th>` : ''}<th style="text-align:right;">${esc(scoreLabel)}</th></tr></thead>
+          <tbody>
+            ${rest.map((s, idx) => `
+              <tr>
+                <td class="rank-col">${idx + 4}</td>
+                <td>${esc(s.archerName)}</td>
+                <td>${esc(opts.clubOf(s))}</td>
+                ${opts.extraLabel ? `<td>${esc(opts.extraOf(s))}</td>` : ''}
+                <td class="score-col">${opts.scoreOf(s)}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>` : '';
+
+      return `
+        <div class="category-block">
+          <div class="category-heading">
+            <span class="cat-name">${esc(bowType)} &middot; ${esc(category)}</span>
+            <span class="cat-count">${list.length} archer${list.length === 1 ? '' : 's'}</span>
+          </div>
+          <div class="podium">${podiumHtml}</div>
+          ${restHtml}
+        </div>`;
+    }).join('');
+  }
+
+  // ---- Group: tier -> archer -> best score per round they shot ----
+  function buildTierAggregates(scores) {
+    const tiers = { Gold: new Map(), Silver: new Map(), Bronze: new Map() };
+    scores.forEach(s => {
+      const tierMap = tiers[s.tier];
+      if (!tierMap) return;
+      const key = (s.agbNumber || s.archerName || '').trim().toLowerCase();
+      if (!key) return;
+      if (!tierMap.has(key)) {
+        tierMap.set(key, { archerName: s.archerName, club: s.club, category: s.category, bowType: s.bowType, rounds: new Map() });
+      }
+      const rec = tierMap.get(key);
+      const existing = rec.rounds.get(s.round);
+      if (existing === undefined || s.totalScore > existing) rec.rounds.set(s.round, s.totalScore);
+    });
+    return tiers;
+  }
+
   // ---- Render ----
   function renderAll() {
+    renderAggregates();
+    renderRounds();
+  }
+
+  function renderAggregates() {
+    const scores = getFilteredIgnoringRound();
+    const tiers = buildTierAggregates(scores);
+    const container = document.getElementById('aggregateContainer');
+
+    const sectionsHtml = TIER_ORDER.map(tierName => {
+      const archers = [...tiers[tierName].values()].map(a => ({
+        ...a,
+        aggregate: [...a.rounds.values()].reduce((sum, v) => sum + v, 0),
+        roundsShot: a.rounds.size
+      }));
+      if (archers.length === 0) return '';
+
+      const blocksHtml = buildCategoryBlocksHtml(archers, {
+        scoreOf: a => a.aggregate,
+        clubOf: a => a.club || '',
+        extraLabel: 'Rounds',
+        extraOf: a => a.roundsShot + ' round' + (a.roundsShot === 1 ? '' : 's'),
+        scoreLabel: 'Total'
+      });
+
+      return `
+        <div class="round-section">
+          <div class="round-header tier-${tierName.toLowerCase()}">
+            <h2>${TIER_ICON[tierName]} ${esc(tierName)} Tier &mdash; Aggregate</h2>
+            <span class="round-count">${archers.length} archer${archers.length === 1 ? '' : 's'}</span>
+          </div>
+          <div class="round-body">${blocksHtml}</div>
+        </div>`;
+    }).join('');
+
+    container.innerHTML = sectionsHtml || '<div class="round-section"><div class="empty-notice">No scores match the current filters.</div></div>';
+  }
+
+  function renderRounds() {
     const filtered = getFiltered();
     const rounds = groupByRound(filtered);
     const container = document.getElementById('roundsContainer');
@@ -413,59 +558,10 @@
 
     container.innerHTML = roundNames.map(roundName => {
       const entries = [...rounds.get(roundName).values()];
-      const cats = groupByCategory(entries);
-
-      const catKeys = [...cats.keys()].sort((a, b) => {
-        const [catA, bowA] = a.split('|');
-        const [catB, bowB] = b.split('|');
-        const bi = sortIndex(BOW_ORDER, bowA) - sortIndex(BOW_ORDER, bowB);
-        if (bi !== 0) return bi;
-        return sortIndex(CATEGORY_ORDER, catA) - sortIndex(CATEGORY_ORDER, catB);
+      const categoryBlocks = buildCategoryBlocksHtml(entries, {
+        scoreOf: s => s.totalScore,
+        clubOf: s => s.club || ''
       });
-
-      const categoryBlocks = catKeys.map(catKey => {
-        const [category, bowType] = catKey.split('|');
-        const list = cats.get(catKey);
-        const top3 = list.slice(0, 3);
-        const rest = list.slice(3);
-
-        const medals = ['&#129351;', '&#129352;', '&#129353;'];
-        const rankClasses = ['rank1', 'rank2', 'rank3'];
-
-        const podiumHtml = top3.map((s, idx) => `
-          <div class="podium-card ${rankClasses[idx]}">
-            <span class="podium-medal">${medals[idx]}</span>
-            <span class="podium-info">
-              <div class="podium-name">${esc(s.archerName)}</div>
-              <div class="podium-club">${esc(s.club || '')}</div>
-            </span>
-            <span class="podium-score">${s.totalScore}</span>
-          </div>`).join('');
-
-        const restHtml = rest.length ? `
-          <table class="rest-table">
-            <thead><tr><th>#</th><th>Name</th><th>Club</th><th style="text-align:right;">Score</th></tr></thead>
-            <tbody>
-              ${rest.map((s, idx) => `
-                <tr>
-                  <td class="rank-col">${idx + 4}</td>
-                  <td>${esc(s.archerName)}</td>
-                  <td>${esc(s.club || '')}</td>
-                  <td class="score-col">${s.totalScore}</td>
-                </tr>`).join('')}
-            </tbody>
-          </table>` : '';
-
-        return `
-          <div class="category-block">
-            <div class="category-heading">
-              <span class="cat-name">${esc(bowType)} &middot; ${esc(category)}</span>
-              <span class="cat-count">${list.length} archer${list.length === 1 ? '' : 's'}</span>
-            </div>
-            <div class="podium">${podiumHtml}</div>
-            ${restHtml}
-          </div>`;
-      }).join('');
 
       return `
         <div class="round-section">
