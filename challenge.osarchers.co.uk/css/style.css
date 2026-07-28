@@ -101,6 +101,16 @@ nav {
 .hero-rings circle { fill: none; stroke: rgba(212, 20, 90, 0.14); }
 .hero-rings line { stroke: rgba(212, 20, 90, 0.22); stroke-width: 2; }
 
+.hero-bg-target {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(1100px, 130vw); height: auto;
+    opacity: 0.07;
+    filter: grayscale(1) brightness(1.8);
+    pointer-events: none;
+    z-index: 0;
+}
+
 .hero-inner {
     max-width: 720px;
     text-align: center;
@@ -330,6 +340,7 @@ footer {
     }
 
     .hero-rings { display: none; }
+    .hero-bg-target { width: 160vw; opacity: 0.05; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
 }
 
