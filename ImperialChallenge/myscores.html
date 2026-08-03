@@ -91,6 +91,16 @@
       gap: 18px;
     }
 
+    .tier-group-heading {
+      grid-column: 1 / -1;
+      font-size: 1.2em;
+      font-weight: 800;
+      color: #1e3c72;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #eee;
+    }
+    .tier-group-heading:not(:first-child) { margin-top: 10px; }
+
     .score-card {
       background: white;
       border-radius: 12px;
@@ -287,6 +297,27 @@
     return tier.toLowerCase();
   }
 
+  function getTimestampMs(timestamp) {
+    if (!timestamp) return 0;
+    if (timestamp.toDate) return timestamp.toDate().getTime();
+    if (timestamp.seconds) return timestamp.seconds * 1000;
+    return new Date(timestamp).getTime();
+  }
+
+  const TIER_ORDER = ['gold', 'silver', 'bronze'];
+  const TIER_LABELS = { gold: 'Gold', silver: 'Silver', bronze: 'Bronze', other: 'Other' };
+
+  // Group scores (already sorted oldest-first) into Gold/Silver/Bronze/Other buckets
+  function groupByTier(scores) {
+    const groups = new Map();
+    scores.forEach(s => {
+      const tier = TIER_ORDER.includes(getTierClass(s.tier)) ? getTierClass(s.tier) : 'other';
+      if (!groups.has(tier)) groups.set(tier, []);
+      groups.get(tier).push(s);
+    });
+    return groups;
+  }
+
   // Keep only the highest score per round for a set of score docs
   function dedupeBestPerRound(scores) {
     const map = new Map();
@@ -419,7 +450,7 @@
           rawScores.push({ id: doc.id, ...doc.data() });
         });
         const scores = dedupeBestPerRound(rawScores)
-          .sort((a, b) => (a.round || '').localeCompare(b.round || ''));
+          .sort((a, b) => getTimestampMs(a.timestamp) - getTimestampMs(b.timestamp));
 
         // Calculate statistics
         const totalRounds = scores.length;
@@ -438,11 +469,18 @@
         const allScores = [];
         allSnapshot.forEach(doc => allScores.push({ id: doc.id, ...doc.data() }));
 
-        // Display score cards
-        scoresGrid.innerHTML = scores.map(score => {
-          const rank = computeRank(allScores, score);
-          return createScoreCard(score, rank);
-        }).join('');
+        // Display score cards, grouped by tier (Gold/Silver/Bronze), oldest date first within each group
+        const tierGroups = groupByTier(scores);
+        scoresGrid.innerHTML = [...TIER_ORDER, 'other']
+          .filter(tier => tierGroups.has(tier))
+          .map(tier => {
+            const heading = `<div class="tier-group-heading">${TIER_LABELS[tier]}</div>`;
+            const cards = tierGroups.get(tier).map(score => {
+              const rank = computeRank(allScores, score);
+              return createScoreCard(score, rank);
+            }).join('');
+            return heading + cards;
+          }).join('');
         noResults.style.display = 'none';
         revealBar.style.display = 'block';
 
