@@ -206,6 +206,16 @@ nav {
 }
 .btn-primary:hover { background: var(--crimson-dark); transform: translateY(-2px); }
 
+/* Disabled state — layers onto .btn-primary/.btn-outline/.nav-cta */
+.is-disabled {
+    background: rgba(255,255,255,0.08) !important;
+    color: rgba(255,255,255,0.35) !important;
+    border-color: rgba(255,255,255,0.12) !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
+}
+.is-disabled:hover { transform: none !important; }
+
 .btn-outline {
     display: inline-flex; align-items: center; gap: 8px;
     background: transparent; color: var(--white);
