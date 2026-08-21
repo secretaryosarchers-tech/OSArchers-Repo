@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Enter – The Imperial & Metric Challenge 2027 | OS Archers</title>
   <meta name="description" content="Enter the 2027 Imperial Challenge, Metric Challenge, or both, from OS Archers.">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="noindex, nofollow">
   <meta name="author" content="OS Archers">
   <link rel="canonical" href="https://challenge.osarchers.co.uk/enter.html">
   <!-- Favicons -->
@@ -26,11 +26,23 @@
   <div class="page-banner-inner">
     <div class="hero-eyebrow">OS Archers · 2027</div>
     <h1>Enter The Challenge</h1>
-    <p class="lead">One form covers both — enter the Imperial Challenge, the Metric Challenge, or both, below.</p>
+    <p class="lead">Entries aren't open yet — check back soon.</p>
   </div>
 </section>
 
-<!-- ─── ENTRY FORM ─── -->
+<!-- ─── NOT OPEN YET ─── -->
+<section class="form-section">
+  <div class="form-card" style="text-align: center;">
+    <p style="color: var(--text-mid); font-size: 15px; margin-bottom: 24px;">
+      We're not taking entries just yet, but you can let us know you're interested
+      in the meantime — we'll be in touch once entries open.
+    </p>
+    <a href="/interest.html" class="btn-primary">Express Your Interest →</a>
+  </div>
+</section>
+
+<!-- ─── ENTRY FORM (disabled until entries open — restore this section and
+     remove the "NOT OPEN YET" section above to re-enable) ───
 <section class="form-section">
   <div class="form-card">
     <form id="entryForm">
@@ -95,6 +107,7 @@
     </form>
   </div>
 </section>
+─── END DISABLED ENTRY FORM ─── -->
 
 <div id="site-footer"></div>
 
@@ -108,7 +121,8 @@
   const successMessage = document.getElementById('successMessage');
   const errorMessage = document.getElementById('errorMessage');
 
-  entryForm.addEventListener('submit', async (event) => {
+  // Entry form is disabled (commented out above) until entries open.
+  if (entryForm) entryForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     successMessage.classList.remove('show');

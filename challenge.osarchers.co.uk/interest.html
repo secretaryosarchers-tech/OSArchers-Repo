@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Express Your Interest – The Imperial & Metric Challenge 2027 | OS Archers</title>
+  <meta name="description" content="Register your interest in the 2027 Imperial Challenge, Metric Challenge, or both, from OS Archers.">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="OS Archers">
+  <link rel="canonical" href="https://challenge.osarchers.co.uk/interest.html">
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;0,900;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<!-- ─── PAGE BANNER ─── -->
+<section class="page-banner">
+  <div class="page-banner-inner">
+    <div class="hero-eyebrow">OS Archers · 2027</div>
+    <h1>Express Your Interest</h1>
+    <p class="lead">Entries aren't open yet, but let us know which challenge(s) you're interested in and we'll be in touch. Expected price: <strong>£12 per challenge</strong>.</p>
+  </div>
+</section>
+
+<!-- ─── INTEREST FORM ─── -->
+<section class="form-section">
+  <div class="form-card">
+    <form id="interestForm">
+      <div class="form-group">
+        <label>Which challenge(s) are you interested in? *</label>
+        <label class="checkbox-row">
+          <input type="checkbox" id="interestImperial" name="interestImperial">
+          <span>The Imperial Challenge — expected £12</span>
+        </label>
+        <label class="checkbox-row" style="margin-top: 8px;">
+          <input type="checkbox" id="interestMetric" name="interestMetric">
+          <span>The Metric Challenge — expected £12</span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="name">Name *</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address *</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-row">
+          <input type="checkbox" id="gdprConsent" name="gdprConsent" required>
+          <span>I agree to the collection and use of my data for this challenge. *</span>
+        </label>
+      </div>
+
+      <button type="submit" class="btn-primary" id="submitBtn">Express Interest</button>
+
+      <div class="status-message success" id="successMessage">
+        Thanks — we've noted your interest and will be in touch!
+      </div>
+      <div class="status-message error" id="errorMessage">
+        Something went wrong. Please try again.
+      </div>
+    </form>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="/js/includes.js"></script>
+<script type="module">
+  import { db } from '/js/firebase-config.js';
+  import { collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+  const interestForm = document.getElementById('interestForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const successMessage = document.getElementById('successMessage');
+  const errorMessage = document.getElementById('errorMessage');
+
+  interestForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    successMessage.classList.remove('show');
+    errorMessage.classList.remove('show');
+
+    const interestImperial = document.getElementById('interestImperial').checked;
+    const interestMetric = document.getElementById('interestMetric').checked;
+    const challenges = [];
+    if (interestImperial) challenges.push('imperial');
+    if (interestMetric) challenges.push('metric');
+
+    if (challenges.length === 0) {
+      errorMessage.textContent = 'Please select at least one challenge.';
+      errorMessage.classList.add('show');
+      return;
+    }
+
+    const gdprConsent = document.getElementById('gdprConsent').checked;
+    if (!gdprConsent) {
+      errorMessage.textContent = 'Please confirm GDPR consent before submitting.';
+      errorMessage.classList.add('show');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    const interestData = {
+      challenges: challenges,
+      season: 2027,
+      name: document.getElementById('name').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      gdprConsent: gdprConsent,
+      createdAt: serverTimestamp()
+    };
+
+    try {
+      await addDoc(collection(db, 'challengeInterest'), interestData);
+      interestForm.reset();
+      successMessage.classList.add('show');
+    } catch (error) {
+      console.error('Firebase write failed:', error);
+      errorMessage.classList.add('show');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Express Interest';
+    }
+  });
+</script>
+
+</body>
+</html>
