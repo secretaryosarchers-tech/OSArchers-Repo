@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interest Submissions – Admin | OS Archers</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;0,900;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="admin-topbar">
+  <div class="admin-topbar-title">
+    OS Archers
+    <span>Challenge Admin · Interest</span>
+  </div>
+  <button class="btn-signout" id="signOutBtn" style="display:none;">Sign Out</button>
+</div>
+
+<!-- ─── LOGIN ─── -->
+<div class="admin-login-wrap" id="loginWrap">
+  <div class="form-card" style="max-width: 400px; width: 100%;">
+    <h1 style="font-family:'Cormorant Garamond',serif; font-size:26px; color:var(--navy-dark); margin-bottom:6px; text-align:center;">Admin Sign In</h1>
+    <p style="text-align:center; color:var(--text-muted); font-size:13.5px; margin-bottom:24px;">Sign in to view interest submissions.</p>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" required autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn-primary" id="loginBtn">Sign In</button>
+      <div class="status-message error" id="loginError">Sign-in failed. Check your email and password.</div>
+    </form>
+  </div>
+</div>
+
+<!-- ─── ADMIN VIEW ─── -->
+<main class="admin-main" id="adminMain" style="display:none;">
+  <div class="admin-container">
+    <div class="stat-grid" id="statGrid"></div>
+
+    <div class="admin-toolbar">
+      <h1>Interest Submissions</h1>
+      <button class="btn-outline on-light" id="exportBtn">Export CSV</button>
+    </div>
+
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Challenges</th>
+            <th>Season</th>
+            <th>Submitted</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="6" class="admin-empty">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script type="module">
+  import { db, auth } from '/js/firebase-config.js';
+  import { collection, getDocs, deleteDoc, doc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+  import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+  const loginWrap = document.getElementById('loginWrap');
+  const adminMain = document.getElementById('adminMain');
+  const signOutBtn = document.getElementById('signOutBtn');
+  const loginForm = document.getElementById('loginForm');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginError = document.getElementById('loginError');
+  const tableBody = document.getElementById('tableBody');
+  const statGrid = document.getElementById('statGrid');
+  const exportBtn = document.getElementById('exportBtn');
+
+  let submissions = [];
+
+  loginForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    loginError.classList.remove('show');
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Signing in...';
+
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      console.error('Sign-in failed:', error);
+      loginError.classList.add('show');
+    } finally {
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Sign In';
+    }
+  });
+
+  signOutBtn.addEventListener('click', () => signOut(auth));
+
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      loginWrap.style.display = 'none';
+      adminMain.style.display = 'block';
+      signOutBtn.style.display = 'inline-block';
+      loadSubmissions();
+    } else {
+      loginWrap.style.display = 'flex';
+      adminMain.style.display = 'none';
+      signOutBtn.style.display = 'none';
+    }
+  });
+
+  function formatDate(ts) {
+    if (!ts) return 'N/A';
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) +
+      ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function challengePills(challenges) {
+    return (challenges || []).map(c =>
+      `<span class="challenge-pill ${c}">${c}</span>`
+    ).join('');
+  }
+
+  function renderStats() {
+    const total = submissions.length;
+    const imperial = submissions.filter(s => (s.challenges || []).includes('imperial')).length;
+    const metric = submissions.filter(s => (s.challenges || []).includes('metric')).length;
+    const both = submissions.filter(s => (s.challenges || []).includes('imperial') && (s.challenges || []).includes('metric')).length;
+
+    statGrid.innerHTML = `
+      <div class="stat-box"><div class="stat-num">${total}</div><span class="stat-label">Total</span></div>
+      <div class="stat-box"><div class="stat-num">${imperial}</div><span class="stat-label">Imperial</span></div>
+      <div class="stat-box"><div class="stat-num">${metric}</div><span class="stat-label">Metric</span></div>
+      <div class="stat-box"><div class="stat-num">${both}</div><span class="stat-label">Both</span></div>
+    `;
+  }
+
+  function renderTable() {
+    if (submissions.length === 0) {
+      tableBody.innerHTML = `<tr><td colspan="6" class="admin-empty">No interest submissions yet.</td></tr>`;
+      return;
+    }
+    tableBody.innerHTML = submissions.map(s => `
+      <tr data-id="${s.id}">
+        <td>${escapeHtml(s.name || '')}</td>
+        <td>${escapeHtml(s.email || '')}</td>
+        <td>${challengePills(s.challenges)}</td>
+        <td>${s.season || ''}</td>
+        <td>${formatDate(s.createdAt)}</td>
+        <td><button class="btn-delete" data-id="${s.id}">Delete</button></td>
+      </tr>
+    `).join('');
+
+    tableBody.querySelectorAll('.btn-delete').forEach(btn => {
+      btn.addEventListener('click', () => handleDelete(btn.dataset.id));
+    });
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  async function handleDelete(id) {
+    const sub = submissions.find(s => s.id === id);
+    if (!sub) return;
+    if (!confirm(`Delete interest submission for ${sub.name || 'this person'}? This cannot be undone.`)) return;
+
+    try {
+      await deleteDoc(doc(db, 'challengeInterest', id));
+      submissions = submissions.filter(s => s.id !== id);
+      renderStats();
+      renderTable();
+    } catch (error) {
+      console.error('Delete failed:', error);
+      alert('Failed to delete: ' + error.message);
+    }
+  }
+
+  async function loadSubmissions() {
+    tableBody.innerHTML = `<tr><td colspan="6" class="admin-empty">Loading…</td></tr>`;
+    try {
+      const q = query(collection(db, 'challengeInterest'), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      submissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderStats();
+      renderTable();
+    } catch (error) {
+      console.error('Failed to load submissions:', error);
+      tableBody.innerHTML = `<tr><td colspan="6" class="admin-empty">Failed to load: ${escapeHtml(error.message)}</td></tr>`;
+    }
+  }
+
+  exportBtn.addEventListener('click', () => {
+    if (submissions.length === 0) return;
+    const rows = [['Name', 'Email', 'Challenges', 'Season', 'Submitted']];
+    submissions.forEach(s => {
+      rows.push([
+        s.name || '',
+        s.email || '',
+        (s.challenges || []).join('; '),
+        s.season || '',
+        formatDate(s.createdAt)
+      ]);
+    });
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `challenge-interest-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+</script>
+
+</body>
+</html>
