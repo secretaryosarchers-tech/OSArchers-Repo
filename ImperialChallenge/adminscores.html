@@ -429,6 +429,22 @@
     .btn-edit:hover { background: #1a5276; }
     .btn-edit:active { transform: scale(.96); }
 
+    .btn-delete {
+      padding: 5px 12px;
+      background: var(--red);
+      color: var(--white);
+      border: none;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+      margin-left: 6px;
+    }
+
+    .btn-delete:hover { background: #922b21; }
+    .btn-delete:active { transform: scale(.96); }
+
     .loading-row td {
       text-align: center;
       padding: 48px;
@@ -832,7 +848,7 @@
 <script type="module">
   import { initializeApp }                              from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
   import { getFirestore, collection, getDocs,
-    doc, updateDoc, serverTimestamp }            from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    doc, updateDoc, deleteDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
   import { getAuth, signInWithEmailAndPassword,
     signOut, onAuthStateChanged }                from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
@@ -1031,6 +1047,7 @@
           <td class="timestamp-cell">${ts}</td>
           <td class="action-cell">
             <button class="btn-edit" onclick="openEdit('${esc(s.id)}')">✏ Edit</button>
+            <button class="btn-delete" onclick="deleteScore('${esc(s.id)}')">🗑 Delete</button>
           </td>
         </tr>`;
     }).join('');
@@ -1118,6 +1135,25 @@
     } finally {
       saveBtn.disabled = false;
       saveBtn.textContent = 'Save Changes';
+    }
+  };
+
+  window.deleteScore = async function(docId) {
+    const score = allScores.find(s => s.id === docId);
+    if (!score) return;
+
+    if (!confirm(`Delete score entry for ${score.archerName || 'this archer'}? This cannot be undone.`)) return;
+
+    try {
+      await deleteDoc(doc(db, 'imperialChallengeScores', docId));
+
+      allScores = allScores.filter(s => s.id !== docId);
+
+      applyFilters();
+      updateStats();
+      showToast('Score deleted successfully', 'success');
+    } catch (e) {
+      showToast('Error deleting: ' + e.message, 'error');
     }
   };
 

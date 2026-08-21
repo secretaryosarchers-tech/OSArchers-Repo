@@ -60,6 +60,14 @@
     tr.eligible-row {
       background: #d4edda;
     }
+    tr.unpaid-scored-row {
+      background: #f8d7da;
+    }
+    .unpaid-icon {
+      color: #dc3545;
+      font-weight: bold;
+      margin-right: 6px;
+    }
     .status-badge {
       display: inline-block;
       padding: 4px 10px;
@@ -246,6 +254,12 @@
     return r.paid === true || isOsaClub(r.clubName);
   }
 
+  function hasSubmittedScore(r) {
+    const agb = (r.agbNumber || '').trim().toLowerCase();
+    if (!agb) return false;
+    return scores.some(s => (s.agbNumber || '').trim().toLowerCase() === agb);
+  }
+
   function formatDate(ts) {
     if (!ts) return 'N/A';
     let d;
@@ -298,9 +312,10 @@
     tbody.innerHTML = registrations.map(r => {
       const osa = isOsaClub(r.clubName);
       const eligible = isEligible(r);
+      const flagged = hasSubmittedScore(r) && !eligible;
       return `
-      <tr style="border-bottom: 1px solid #e0e0e0;" class="${eligible ? 'eligible-row' : ''}">
-        <td style="padding: 12px;">${r.firstName} ${r.lastName}</td>
+      <tr style="border-bottom: 1px solid #e0e0e0;" class="${eligible ? 'eligible-row' : ''} ${flagged ? 'unpaid-scored-row' : ''}">
+        <td style="padding: 12px;">${flagged ? '<span class="unpaid-icon" title="Score submitted but not paid">✗</span>' : ''}${r.firstName} ${r.lastName}</td>
         <td style="padding: 12px;">${r.email}</td>
         <td style="padding: 12px;">${r.agbNumber}</td>
         <td style="padding: 12px;">${r.clubName}</td>
