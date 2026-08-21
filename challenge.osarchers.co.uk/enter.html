@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enter – Imperial Challenge 2027 | OS Archers</title>
-  <meta name="description" content="Enter the 2027 Imperial Challenge from OS Archers.">
+  <title>Enter – The Imperial & Metric Challenge 2027 | OS Archers</title>
+  <meta name="description" content="Enter the 2027 Imperial Challenge, Metric Challenge, or both, from OS Archers.">
   <meta name="robots" content="index, follow">
   <meta name="author" content="OS Archers">
-  <link rel="canonical" href="https://challenge.osarchers.co.uk/imperial/enter.html">
+  <link rel="canonical" href="https://challenge.osarchers.co.uk/enter.html">
   <!-- Favicons -->
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="/images/favicon.png">
@@ -19,14 +19,14 @@
 </head>
 <body>
 
-<div id="site-header" data-src="/imperial/header.html"></div>
+<div id="site-header"></div>
 
 <!-- ─── PAGE BANNER ─── -->
 <section class="page-banner">
   <div class="page-banner-inner">
-    <div class="hero-eyebrow">OS Archers · Imperial · 2027</div>
-    <h1>Enter the Imperial Challenge</h1>
-    <p class="lead">Submit your entry details below to take part in the 2027 season.</p>
+    <div class="hero-eyebrow">OS Archers · 2027</div>
+    <h1>Enter The Challenge</h1>
+    <p class="lead">One form covers both — enter the Imperial Challenge, the Metric Challenge, or both, below.</p>
   </div>
 </section>
 
@@ -34,6 +34,18 @@
 <section class="form-section">
   <div class="form-card">
     <form id="entryForm">
+      <div class="form-group">
+        <label>Which challenge(s) are you entering? *</label>
+        <label class="checkbox-row">
+          <input type="checkbox" id="enterImperial" name="enterImperial">
+          <span>The Imperial Challenge</span>
+        </label>
+        <label class="checkbox-row" style="margin-top: 8px;">
+          <input type="checkbox" id="enterMetric" name="enterMetric">
+          <span>The Metric Challenge</span>
+        </label>
+      </div>
+
       <div class="form-row">
         <div class="form-group">
           <label for="firstName">First Name *</label>
@@ -101,10 +113,24 @@
 
     successMessage.classList.remove('show');
     errorMessage.classList.remove('show');
+
+    const enterImperial = document.getElementById('enterImperial').checked;
+    const enterMetric = document.getElementById('enterMetric').checked;
+    const challenges = [];
+    if (enterImperial) challenges.push('imperial');
+    if (enterMetric) challenges.push('metric');
+
+    if (challenges.length === 0) {
+      errorMessage.textContent = 'Please select at least one challenge to enter.';
+      errorMessage.classList.add('show');
+      return;
+    }
+
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
 
     const entryData = {
+      challenges: challenges,
       firstName: document.getElementById('firstName').value.trim(),
       lastName: document.getElementById('lastName').value.trim(),
       email: document.getElementById('email').value.trim(),
@@ -124,8 +150,8 @@
     }
 
     try {
-      // TODO: flip to 'challengeEntries' (with roundType:'imperial', season:2027)
-      // once the new Firestore rules are deployed — see firestore.rules.proposed.
+      // TODO: flip to 'challengeEntries' (drop the imperialChallenge-specific
+      // name) once the new Firestore rules are deployed — see firestore.rules.proposed.
       await addDoc(collection(db, 'imperialChallengeEntries'), entryData);
       entryForm.reset();
       successMessage.classList.add('show');
