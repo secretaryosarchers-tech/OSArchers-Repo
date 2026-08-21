@@ -102,14 +102,16 @@ nav {
 .hero-rings line { stroke: rgba(212, 20, 90, 0.22); stroke-width: 2; }
 
 .hero-bg-target {
-    position: absolute; top: 50%; left: 50%;
+    position: absolute; top: 50%;
     transform: translate(-50%, -50%);
-    width: min(1100px, 130vw); height: auto;
+    width: min(620px, 72vw); height: auto;
     opacity: 0.07;
     filter: grayscale(1) brightness(1.8);
     pointer-events: none;
     z-index: 0;
 }
+.hero-bg-target--left { left: 18%; }
+.hero-bg-target--right { left: 82%; }
 
 .hero-inner {
     max-width: 720px;
@@ -348,7 +350,7 @@ footer {
     }
 
     .hero-rings { display: none; }
-    .hero-bg-target { width: 160vw; opacity: 0.05; }
+    .hero-bg-target { width: 95vw; opacity: 0.05; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
 }
 
