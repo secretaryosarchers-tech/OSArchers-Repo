@@ -131,6 +131,7 @@
 
     const entryData = {
       challenges: challenges,
+      season: 2027,
       firstName: document.getElementById('firstName').value.trim(),
       lastName: document.getElementById('lastName').value.trim(),
       email: document.getElementById('email').value.trim(),
@@ -150,9 +151,7 @@
     }
 
     try {
-      // TODO: flip to 'challengeEntries' (drop the imperialChallenge-specific
-      // name) once the new Firestore rules are deployed — see firestore.rules.proposed.
-      await addDoc(collection(db, 'imperialChallengeEntries'), entryData);
+      await addDoc(collection(db, 'challengeEntries'), entryData);
       entryForm.reset();
       successMessage.classList.add('show');
     } catch (error) {
