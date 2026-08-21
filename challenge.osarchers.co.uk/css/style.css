@@ -325,6 +325,7 @@ nav {
 }
 .form-group input[type="text"],
 .form-group input[type="email"],
+.form-group input[type="password"],
 .form-group textarea {
     width: 100%;
     font-family: 'Inter', sans-serif;
@@ -338,6 +339,7 @@ nav {
 }
 .form-group input[type="text"]:focus,
 .form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus,
 .form-group textarea:focus {
     outline: none;
     border-color: var(--crimson);
